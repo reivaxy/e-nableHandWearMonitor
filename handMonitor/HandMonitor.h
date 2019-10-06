@@ -19,10 +19,5 @@ public:
   
   boolean onCharge = false;
   
-  // TODO: values
-  int powerDetectionPin = 1;
-  int presenceDetectionPin = 1;
-
-  
 
 };
