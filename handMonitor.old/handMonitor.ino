@@ -1,9 +1,8 @@
 
 #include "HandMonitor.h"
-#include "mapping.h"
-
 
 HandMonitor *module;
+WifiAP *wifiAP;
 HandMonitorConfig* config;
 
 
