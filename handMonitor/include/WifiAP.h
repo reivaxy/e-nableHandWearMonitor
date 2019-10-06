@@ -24,7 +24,7 @@ public:
   void close();
 
   HandMonitorConfig* config;
-  Api *api;
+  Api *api = NULL;
 
   boolean openedWifiAP = false;
   

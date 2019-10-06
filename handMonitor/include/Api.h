@@ -20,9 +20,10 @@ public:
    Api(HandMonitorConfig* _config);
 
    HandMonitorConfig *config;
-   ESP8266WebServer* server;
+   ESP8266WebServer* server = NULL;
 
    void init();
+   void loop();
    void printHomePage();
    void sendHtml(const char* html, int code);
 

@@ -17,6 +17,9 @@ WifiAP::WifiAP(HandMonitorConfig* _config) {
 
 void WifiAP::expose() {
    if (openedWifiAP) {
+      if (api != NULL) {
+         api->loop();
+      }
       return;
    }
    WiFi.mode(WIFI_AP);
@@ -29,15 +32,12 @@ void WifiAP::expose() {
 }
 
 void WifiAP::close() {
-   return; // for now !
-
    if (!openedWifiAP) {
       return;
    }
-
    
    DebugPrintln("Closing Wifi AP");
    WiFi.mode(WIFI_OFF);
    openedWifiAP = false;
+   delete api;
 }
-

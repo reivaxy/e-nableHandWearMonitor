@@ -22,6 +22,7 @@ void Api::init() {
       DebugPrintln("GET /");
       printHomePage();
    });
+   server->begin();
 }
 
 void Api::printHomePage() {
@@ -32,5 +33,11 @@ void Api::printHomePage() {
 void Api::sendHtml(const char* html, int code) {
   server->sendHeader("Connection", "close");
   server->send(code, "text/html", html);
+}
+
+void Api::loop() {
+   if (server != NULL) {
+      server->handleClient();
+   }
 }
 

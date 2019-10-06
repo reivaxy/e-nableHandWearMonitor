@@ -14,7 +14,7 @@
 
 char initPage[] = "\
 <html title='Hand Monitor'>\
-<head>\
+<head><meta charset='utf-8'>\
 <style>\
 </style>\
 </head>\
