@@ -2,7 +2,7 @@
 
 #include "config.h"
 
-class HandMonitor:public NaturePower {
+class HandMonitor {
 public:
   HandMonitor(HandMonitorConfig* config, int sda, int scl);
   void loop();
