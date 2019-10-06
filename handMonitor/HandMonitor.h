@@ -7,7 +7,7 @@ public:
   HandMonitor(HandMonitorConfig* config, int sda, int scl);
   void loop();
   void init();
-  void processSettings(String) override;
+  void processSettings();
 
   boolean openingWifiAP = false;
   boolean closingWifiAP = false;

@@ -9,3 +9,6 @@ void HandMonitor::init() {
 
 void HandMonitor::loop() {
 }
+
+void HandMonitor::processSettings() {
+}

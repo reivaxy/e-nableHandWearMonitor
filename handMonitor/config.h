@@ -35,8 +35,8 @@ struct HandMonitorConfigStruct:public XEEPROMConfigDataStruct {
 
 class HandMonitorConfig:public XEEPROMConfigClass {
 public:
-  HandMonitorConfig(unsigned int version, const char* type, const char* moduleName);
-  HandMonitorConfig(unsigned int version, const char* type, const char* moduleName, unsigned int dataSize);
+  HandMonitorConfig(const char* moduleName);
+  HandMonitorConfig(const char* moduleName, unsigned int dataSize);
   virtual void initFromDefault();
 
   void setName(const char*);

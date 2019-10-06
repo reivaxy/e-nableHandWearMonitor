@@ -1,12 +1,12 @@
 
 #include "config.h"
 
-HandMonitorConfig::HandMonitorConfig(unsigned int version, const char* type, const char* name):XEEPROMConfigClass(version + CONFIG_BASE_VERSION, type, sizeof(HandMonitorConfigStruct)) {
+HandMonitorConfig::HandMonitorConfig(const char* name):XEEPROMConfigClass(CONFIG_BASE_VERSION, "HandMonitor", sizeof(HandMonitorConfigStruct)) {
   strlcpy(_defaultModuleName, name, NAME_MAX_LENGTH + 1);
   setName(name);
 }
 
-HandMonitorConfig::HandMonitorConfig(unsigned int version, const char* type, const char* name, unsigned int dataSize):XEEPROMConfigClass(version + CONFIG_BASE_VERSION, type, dataSize) {
+HandMonitorConfig::HandMonitorConfig(const char* name, unsigned int dataSize):XEEPROMConfigClass(CONFIG_BASE_VERSION, "HandMonitor", dataSize) {
   strlcpy(_defaultModuleName, name, NAME_MAX_LENGTH + 1);
   setName(name);
 }
