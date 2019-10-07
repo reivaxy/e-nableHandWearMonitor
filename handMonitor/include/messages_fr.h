@@ -19,4 +19,6 @@
 #define MSG_INIT_NTP_HOST "Serveur NTP"
 #define MSG_INIT_WEBSITE "Site web"
 #define MSG_INIT_API_KEY "Clé"
-#define MSG_START_OTA "Mettre à jour"
+#define MSG_START_OTA "Mettre à jour Firmware"
+#define MSG_WAITING_OTA "Prêt pour OTA sur IP %s"
+#define MSG_CONFIG_SAVED "Données sauvées"

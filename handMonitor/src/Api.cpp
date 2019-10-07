@@ -35,8 +35,10 @@ void Api::init() {
    server->on("/ota", HTTP_POST, [&]() {
       DebugPrintln("POST /ota");
       startOTA();
+      char message[200];
+      sprintf(message, MSG_WAITING_OTA, WiFi.softAPIP().toString().c_str());
+      sendHtml(message, 200);
    });
-
 
    server->begin();
 }
@@ -78,6 +80,7 @@ void Api::initSave() {
    }
 
    config->saveToEeprom();
+   sendHtml(MSG_CONFIG_SAVED, 200);
    // TODO: really restart ? or just reinit wifi network(s) ? (but there will be more than wifi config soon)
    if (restart) {
        ESP.restart(); 
@@ -93,9 +96,13 @@ void Api::startOTA() {
    }
 }
 
-void Api::sendHtml(const char* html, int code) {
-  server->sendHeader("Connection", "close");
-  server->send(code, "text/html", html);
+void Api::sendHtml(const char* message, int code) {
+   char html[] = "<html><head><meta charset='utf-8'></head><body>%s</body></html>";
+   char *htmlPage = (char *)malloc(strlen(html) + strlen(message) + 1);  // +1 is useless since %s is replaced ;)
+   sprintf(htmlPage, html, message);
+   server->sendHeader("Connection", "close");
+   server->send(code, "text/html", htmlPage);
+   free(htmlPage);
 }
 
 void Api::refresh() {
