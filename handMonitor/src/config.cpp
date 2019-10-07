@@ -2,12 +2,12 @@
 #include "config.h"
 
 HandMonitorConfig::HandMonitorConfig(const char* name):XEEPROMConfigClass(CONFIG_BASE_VERSION, "HandMonitor", sizeof(HandMonitorConfigStruct)) {
-  strlcpy(_defaultModuleName, name, NAME_MAX_LENGTH + 1);
+  strlcpy(defaultModuleName, name, NAME_MAX_LENGTH + 1);
   setName(name);
 }
 
 HandMonitorConfig::HandMonitorConfig(const char* name, unsigned int dataSize):XEEPROMConfigClass(CONFIG_BASE_VERSION, "HandMonitor", dataSize) {
-  strlcpy(_defaultModuleName, name, NAME_MAX_LENGTH + 1);
+  strlcpy(defaultModuleName, name, NAME_MAX_LENGTH + 1);
   setName(name);
 }
 
@@ -20,7 +20,7 @@ void HandMonitorConfig::initFromDefault() {
   XEEPROMConfigClass::initFromDefault(); // handles version and name init
   HandMonitorConfigStruct* configPtr = _getDataPtr();
   
-  setName(_defaultModuleName); // Reset module name to default name
+  setName(defaultModuleName); // Reset module name to default name
   setAPSsid(DEFAULT_AP_SSID);
   setAPPwd(DEFAULT_AP_PWD);
   setSsid("");
@@ -73,4 +73,12 @@ const char* HandMonitorConfig::getNtpServer(void) {
 
 HandMonitorConfigStruct* HandMonitorConfig::_getDataPtr(void) {
   return (HandMonitorConfigStruct*)XEEPROMConfigClass::_getDataPtr();
+}
+
+bool HandMonitorConfig::isHomeWifiConfigured() {
+    if (*getSsid() != 0) {
+    return true;
+  }
+  return false;
+
 }

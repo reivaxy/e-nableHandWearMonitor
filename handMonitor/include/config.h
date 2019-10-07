@@ -68,7 +68,7 @@ public:
   void setNtpServer(const char* ntpServer);
   const char* getNtpServer(void);
 
-protected:
+  bool isHomeWifiConfigured(void);
   HandMonitorConfigStruct* _getDataPtr(void);
-  char _defaultModuleName[NAME_MAX_LENGTH + 1];  // to be able to reset it if needed
+  char defaultModuleName[NAME_MAX_LENGTH + 1];  // to be able to reset it if needed
 };

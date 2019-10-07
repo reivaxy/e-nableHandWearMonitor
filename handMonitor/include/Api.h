@@ -13,6 +13,7 @@
  
  #include <ESP8266WebServer.h>
  #include "config.h"
+ #include "Ota.h"
  #include "mapping.h"
 
 class Api {
@@ -21,10 +22,13 @@ public:
 
    HandMonitorConfig *config;
    ESP8266WebServer* server = NULL;
+   Ota* ota = NULL;
 
    void init();
-   void loop();
+   void refresh();
    void printHomePage();
+   void initSave();
+   void startOTA();
    void sendHtml(const char* html, int code);
 
 };

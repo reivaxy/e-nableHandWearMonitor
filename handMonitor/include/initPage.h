@@ -30,6 +30,9 @@ char initPage[] = "\
   <input name='apiKey' type='text' placeholder='" MSG_INIT_API_KEY "'/><br/> -->\
   <input type='submit'/>\
 </form>\
+<form action='/ota' method='post'>\
+  <input type='submit' value='" MSG_START_OTA "'/><!--TODO : offer choice of network for OTA (AP or box) -->\
+</form>\
 </body>\
 </html>\
 ";

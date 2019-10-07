@@ -18,7 +18,7 @@ WifiAP::WifiAP(HandMonitorConfig* _config) {
 void WifiAP::expose() {
    if (openedWifiAP) {
       if (api != NULL) {
-         api->loop();
+         api->refresh();
       }
       return;
    }

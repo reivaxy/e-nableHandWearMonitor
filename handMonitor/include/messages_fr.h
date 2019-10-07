@@ -19,3 +19,4 @@
 #define MSG_INIT_NTP_HOST "Serveur NTP"
 #define MSG_INIT_WEBSITE "Site web"
 #define MSG_INIT_API_KEY "Clé"
+#define MSG_START_OTA "Mettre à jour"
