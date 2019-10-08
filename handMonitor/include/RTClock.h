@@ -4,29 +4,28 @@
  *  Author  : Xavier Grosjean & Thomas Broussard
  * 
  *  ---------------------------------------------------------------------------------------------------------------------------------------------
- *  Description : 
+ *  Description : Rtc handling
  * 
  * =============================================================================================================================================
  */
 
-#ifndef __MAPPING_H__
-#define __MAPPING_H__
+#pragma once
 
-/* 
-* ====================================================================================
-*                                  I/O Mapping
-* ====================================================================================
-*/
+#include "mapping.h"
+#include "debug.h"
 
-/** RTC Clock */
-#define PIN_RTC_SCL 4
-#define PIN_RTC_SDA 5
-#define PIN_RTC_VCC 16
+#include <Wire.h> // Using default SDA = 4, SCL = 5
 
-/** Sensor */
-#define PIN_SENSOR  A0
+#include <RtcDS1307.h>
 
-/** Charger detection */
-#define PIN_POWER_DETECT 12
 
-#endif
+class RTClock {
+public:
+   void setup();
+   void setup(const char* timeStr);
+   int getTime(char *timeStr);
+   void printDateTime(const RtcDateTime& dt);
+   int toInt(const char*, int length);
+
+   RtcDS1307<TwoWire> *clock;
+};

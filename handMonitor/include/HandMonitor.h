@@ -1,7 +1,7 @@
 /* 
  *  =============================================================================================================================================
  *  Project : Hand Monitoring e-Nable France
- *  Author  : Reivaxy & Thomas Broussard
+ *  Author  : Xavier Grosjean & Thomas Broussard
  * 
  *  ---------------------------------------------------------------------------------------------------------------------------------------------
  *  Description : Hand monitor
@@ -32,5 +32,6 @@ public:
   WifiAP *wifiAP;
   WifiSTA *wifiSTA;
   HandMonitorConfig* config = NULL;
-
+  RTClock *clock = NULL;
+  time_t lastTimeDisplay = 0;
 };

@@ -1,7 +1,7 @@
 /* 
  *  =============================================================================================================================================
  *  Project : Hand Monitoring e-Nable France
- *  Author  : Reivaxy & Thomas Broussard
+ *  Author  : Xavier Grosjean & Thomas Broussard
  * 
  *  ---------------------------------------------------------------------------------------------------------------------------------------------
  *  Description : Hand monitor
@@ -16,6 +16,8 @@ HandMonitor::HandMonitor(HandMonitorConfig* conf, int sda, int scl) {
 }
 
 void HandMonitor::init() {
+   clock = new RTClock();
+   clock->setup();
 }
 
 void HandMonitor::loop() {
@@ -41,6 +43,19 @@ void HandMonitor::loop() {
    if (isOnCharge && wasOnCharge) {
       wifiAP->refresh();
       wifiSTA->refresh();
+   }
+
+   if (clock != NULL) {
+      char dateTime[50];
+
+      int error = clock->getTime(dateTime);
+      time_t timeNow = millis();
+
+      if (!error && (timeNow - lastTimeDisplay > 10000)) {
+         lastTimeDisplay = timeNow;
+         DebugPrintln(dateTime);
+      }      
+      
    }
 }
 

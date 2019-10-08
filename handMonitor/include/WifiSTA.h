@@ -1,7 +1,7 @@
 /* 
  *  =============================================================================================================================================
  *  Project : Hand Monitoring e-Nable France
- *  Author  : Reivaxy & Thomas Broussard
+ *  Author  : Xavier Grosjean & Thomas Broussard
  * 
  *  ---------------------------------------------------------------------------------------------------------------------------------------------
  *  Description : Handle connection to home Wifi
@@ -17,6 +17,7 @@
 
 #include "config.h"
 #include "debug.h"
+#include "RTClock.h"
 
 class WifiSTA {
 public:
@@ -32,5 +33,5 @@ public:
   boolean connecting = false;
   boolean disconnecting = false;
   WiFiEventHandler wifiSTAGotIpHandler, wifiSTADisconnectedHandler;
-
+  RTClock *clock = NULL;
 };

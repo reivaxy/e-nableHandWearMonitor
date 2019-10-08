@@ -1,7 +1,7 @@
 /* 
  *  =============================================================================================================================================
  *  Project : Hand Monitoring e-Nable France
- *  Author  : Reivaxy & Thomas Broussard
+ *  Author  : Xavier Grosjean & Thomas Broussard
  * 
  *  ---------------------------------------------------------------------------------------------------------------------------------------------
  *  Description : define the config data structure to be saved in EEPROM

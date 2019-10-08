@@ -1,7 +1,7 @@
 /* 
  *  =============================================================================================================================================
  *  Project : Hand Monitoring e-Nable France
- *  Author  : Reivaxy & Thomas Broussard
+ *  Author  : Xavier Grosjean & Thomas Broussard
  * 
  *  ---------------------------------------------------------------------------------------------------------------------------------------------
  *  Description : french messages for embedded server web pages
@@ -22,3 +22,4 @@
 #define MSG_START_OTA "Mettre à jour Firmware"
 #define MSG_WAITING_OTA "Prêt pour OTA sur IP %s"
 #define MSG_CONFIG_SAVED "Données sauvées"
+#define MSG_RESET "Reset"

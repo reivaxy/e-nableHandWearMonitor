@@ -1,7 +1,7 @@
 /* 
  *  =============================================================================================================================================
  *  Project : Hand Monitoring e-Nable France
- *  Author  : Reivaxy & Thomas Broussard
+ *  Author  : Xavier Grosjean & Thomas Broussard
  * 
  *  ---------------------------------------------------------------------------------------------------------------------------------------------
  *  Description : Handle web API
@@ -29,6 +29,13 @@ void Api::init() {
    server->on("/initSave", HTTP_POST, [&]() {
       DebugPrintln("POST /initSave");
       initSave();
+   });   
+
+   // Reset to factory defaults
+   server->on("/reset", HTTP_POST, [&]() {
+      DebugPrintln("POST /reset");
+      config->initFromDefault();
+      ESP.restart();
    });   
    
    // Process OTA

@@ -1,7 +1,7 @@
  /* 
  *  =============================================================================================================================================
  *  Project : Hand Monitoring e-Nable France
- *  Author  : Reivaxy & Thomas Broussard
+ *  Author  : Xavier Grosjean & Thomas Broussard
  * 
  *  ---------------------------------------------------------------------------------------------------------------------------------------------
  *  Description : initialization web page
@@ -30,7 +30,10 @@ char initPage[] = "\
   <input type='submit'/>\
 </form>\
 <form action='/ota' method='post'>\
-  <input type='submit' value='" MSG_START_OTA "'/><!--TODO : offer choice of network for OTA (AP or box) -->\
+  <input type='submit' value='" MSG_START_OTA "'/>\
+</form>\
+<form action='/reset' method='post'>\
+  <input type='submit' value='" MSG_RESET "'/>\
 </form>\
 </body>\
 </html>\
