@@ -22,7 +22,7 @@ void WifiAP::open() {
    DebugPrintf("IP: %s\n", WiFi.softAPIP().toString().c_str());
    api = new Api(config);
    api->init();
-   opened = true;
+   opened = true; 
 }
 
 void WifiAP::close() {

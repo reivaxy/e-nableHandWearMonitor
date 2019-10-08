@@ -28,5 +28,4 @@ public:
   Api *api = NULL;
 
   boolean opened = false;
-
 };

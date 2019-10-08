@@ -23,10 +23,6 @@ void WifiSTA::connect() {
    WiFi.mode(WIFI_AP_STA);
    wifiSTAGotIpHandler = WiFi.onStationModeGotIP([&](WiFiEventStationModeGotIP ipInfo) {
       DebugPrintf("Connected to %s on IP %s\n", config->getSsid(), ipInfo.ip.toString().c_str());
-      mdns = new MDNSResponder();
-      if (mdns->begin("esp8266", WiFi.localIP())) {
-         Serial.println("MDNS responder started");
-      }
       DebugPrintf("Connecting to NTP server %s\n", config->getNtpServer());
       NTP.begin(config->getNtpServer());
       NTP.setInterval(30, 7200);  // retry, refresh

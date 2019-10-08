@@ -12,7 +12,6 @@
 #pragma once
 
 #include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
 #include <NtpClientLib.h>
 #include <TimeLib.h>
 
@@ -33,6 +32,5 @@ public:
   boolean connecting = false;
   boolean disconnecting = false;
   WiFiEventHandler wifiSTAGotIpHandler, wifiSTADisconnectedHandler;
-  MDNSResponder *mdns;
 
 };
