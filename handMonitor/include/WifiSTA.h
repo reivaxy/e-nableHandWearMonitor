@@ -1,35 +1,38 @@
- /* 
+/* 
  *  =============================================================================================================================================
  *  Project : Hand Monitoring e-Nable France
  *  Author  : Reivaxy & Thomas Broussard
  * 
  *  ---------------------------------------------------------------------------------------------------------------------------------------------
- *  Description : Handle web API
+ *  Description : Handle connection to home Wifi
  * 
  * =============================================================================================================================================
  */
 
- #pragma once
- 
- #include <ESP8266WebServer.h>
- #include "config.h"
- #include "Ota.h"
- #include "debug.h"
+#pragma once
 
-class Api {
+#include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
+#include <NtpClientLib.h>
+#include <TimeLib.h>
+
+#include "config.h"
+#include "debug.h"
+
+class WifiSTA {
 public:
-   Api(HandMonitorConfig* _config);
+  WifiSTA(HandMonitorConfig* config);
 
-   HandMonitorConfig *config;
-   ESP8266WebServer* server = NULL;
-   Ota* ota = NULL;
+  void connect();
+  void disconnect();
+  void refresh();
 
-   void init();
-   void close();
-   void refresh();
-   void printHomePage();
-   void initSave();
-   void startOTA();
-   void sendHtml(const char* html, int code);
+  HandMonitorConfig* config;
+
+  boolean connected = false;
+  boolean connecting = false;
+  boolean disconnecting = false;
+  WiFiEventHandler wifiSTAGotIpHandler, wifiSTADisconnectedHandler;
+  MDNSResponder *mdns;
 
 };

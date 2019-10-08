@@ -15,29 +15,32 @@ WifiAP::WifiAP(HandMonitorConfig* _config) {
    config = _config;
 }
 
-void WifiAP::expose() {
-   if (openedWifiAP) {
-      if (api != NULL) {
-         api->refresh();
-      }
-      return;
-   }
+void WifiAP::open() {
    WiFi.mode(WIFI_AP);
    DebugPrintf("Opening wifi AP %s\n", config->getAPSsid());
    WiFi.softAP(config->getAPSsid(), config->getAPPwd());
    DebugPrintf("IP: %s\n", WiFi.softAPIP().toString().c_str());
-   openedWifiAP = true;
    api = new Api(config);
    api->init();
+   opened = true;
 }
 
 void WifiAP::close() {
-   if (!openedWifiAP) {
+   if (!opened) {
       return;
-   }
-   
+   }  
    DebugPrintln("Closing Wifi AP");
+   api->close();
    WiFi.mode(WIFI_OFF);
-   openedWifiAP = false;
+   opened = false;
    delete api;
+   api = NULL;
+}
+
+void WifiAP::refresh() {
+   if (opened) {
+      if (api != NULL) {
+         api->refresh();
+      }   
+   }
 }

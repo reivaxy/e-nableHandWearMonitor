@@ -15,8 +15,7 @@
 char initPage[] = "\
 <html title='Hand Monitor'>\
 <head><meta charset='utf-8'>\
-<style>\
-</style>\
+<meta name='viewport' content='width=device-width, initial-scale=1'>\
 </head>\
 <body>\
 <h1>" MSG_INIT_WELCOME "</h1>\

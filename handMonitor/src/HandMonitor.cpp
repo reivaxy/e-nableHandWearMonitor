@@ -11,23 +11,36 @@
 
 #include "HandMonitor.h"
 
-HandMonitor::HandMonitor(HandMonitorConfig* config, int sda, int scl) {
-   wifiAP = new WifiAP(config);
+HandMonitor::HandMonitor(HandMonitorConfig* conf, int sda, int scl) {
+   config = conf;
 }
 
 void HandMonitor::init() {
 }
 
 void HandMonitor::loop() {
-   onCharge = digitalRead(PIN_POWER_DETECT);
+   isOnCharge = digitalRead(PIN_POWER_DETECT);
   
    // when module is bein charged, open the wifi access point
-   if(onCharge) {
-      wifiAP->expose();
-   } else {
+   if (isOnCharge && !wasOnCharge) {
+      wasOnCharge = true;
+      wifiAP = new WifiAP(config);
+      wifiAP->open();
+      wifiSTA = new WifiSTA(config);
+      wifiSTA->connect();
+      Utils::checkHeap("onCharge on");
+   }
+   if (wasOnCharge && !isOnCharge) {
+      wasOnCharge = false;
       wifiAP->close();
+      delete(wifiAP);
+      wifiSTA->disconnect();
+      delete(wifiSTA);
+      Utils::checkHeap("onCharge off");
+   }
+   if (isOnCharge && wasOnCharge) {
+      wifiAP->refresh();
+      wifiSTA->refresh();
    }
 }
 
-void HandMonitor::processSettings() {
-}

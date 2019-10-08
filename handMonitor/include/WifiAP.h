@@ -13,22 +13,20 @@
 
 #include <ESP8266WiFi.h>
 #include "config.h"
-#include "mapping.h"
+#include "debug.h"
 #include "Api.h"
 
 class WifiAP {
 public:
   WifiAP(HandMonitorConfig* config);
-  
-  void expose();
+
+  void open();
   void close();
+  void refresh();
 
   HandMonitorConfig* config;
   Api *api = NULL;
 
-  boolean openedWifiAP = false;
-  
-  boolean connectedToWifi = false;
-  boolean connectingToWifi = false;
-  boolean disconnectingFromWifi = false;
+  boolean opened = false;
+
 };

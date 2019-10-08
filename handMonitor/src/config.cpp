@@ -1,5 +1,7 @@
 
 #include "config.h"
+#include <TimeLib.h>
+#include <NtpClientLib.h>
 
 HandMonitorConfig::HandMonitorConfig(const char* name):XEEPROMConfigClass(CONFIG_BASE_VERSION, "HandMonitor", sizeof(HandMonitorConfigStruct)) {
   strlcpy(defaultModuleName, name, NAME_MAX_LENGTH + 1);
@@ -18,7 +20,6 @@ HandMonitorConfig::HandMonitorConfig(const char* name, unsigned int dataSize):XE
 */
 void HandMonitorConfig::initFromDefault() {
   XEEPROMConfigClass::initFromDefault(); // handles version and name init
-  HandMonitorConfigStruct* configPtr = _getDataPtr();
   
   setName(defaultModuleName); // Reset module name to default name
   setAPSsid(DEFAULT_AP_SSID);

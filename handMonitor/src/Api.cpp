@@ -46,6 +46,10 @@ void Api::init() {
 void Api::printHomePage() {
    sendHtml(initPage, 200);
 }
+void Api::close() {
+   server->close();
+   delete server;
+}
 
 void Api::initSave() {
    boolean restart = false;
@@ -64,18 +68,18 @@ void Api::initSave() {
       restart = true;
    }
 
-   // Read and save new AP SSID
+   // Read and save new Home SSID
    String homeSsid = server->arg("homeSsid");
    if (homeSsid.length() > 0) {
       // TODO: add more checks
-      config->setAPSsid(homeSsid.c_str());
+      config->setSsid(homeSsid.c_str());
       restart = true;
    }
-   // Read and save new AP Pws
+   // Read and save new Home Pws
    String homePwd = server->arg("homePwd");
    if (homePwd.length() > 0) {
       // TODO: add more checks
-      config->setAPPwd(homePwd.c_str());
+      config->setPwd(homePwd.c_str());
       restart = true;
    }
 
@@ -97,7 +101,7 @@ void Api::startOTA() {
 }
 
 void Api::sendHtml(const char* message, int code) {
-   char html[] = "<html><head><meta charset='utf-8'></head><body>%s</body></html>";
+   char html[] = "<html><head><meta name='viewport' content='width=device-width, initial-scale=1'><meta charset='utf-8'></head><body>%s</body></html>";
    char *htmlPage = (char *)malloc(strlen(html) + strlen(message) + 1);  // +1 is useless since %s is replaced ;)
    sprintf(htmlPage, html, message);
    server->sendHeader("Connection", "close");
