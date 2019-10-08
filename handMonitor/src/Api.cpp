@@ -35,6 +35,7 @@ void Api::init() {
    server->on("/reset", HTTP_POST, [&]() {
       DebugPrintln("POST /reset");
       config->initFromDefault();
+      config->saveToEeprom();
       ESP.restart();
    });   
    
