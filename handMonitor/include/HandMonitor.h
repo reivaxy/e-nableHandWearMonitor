@@ -26,7 +26,8 @@ public:
   void loop();
   void init();
   void debugMem(const char* msg);
-
+  void deepSleep();
+  
   boolean isOnCharge = false;
   boolean wasOnCharge = false;
   WifiAP *wifiAP;
@@ -34,4 +35,6 @@ public:
   HandMonitorConfig* config = NULL;
   RTClock *clock = NULL;
   time_t lastTimeDisplay = 0;
+  int sleepTime = 10; // for now, will be in configuration later.
+
 };
