@@ -43,8 +43,39 @@ void RTClock::setup(const char* _dateTime) {
 }
 
 int RTClock::getTime(char* buffer) {
+   RtcDateTime dateTime;
+   int lastError = get(&dateTime);
+   if (lastError == 0) {
+      sprintf(buffer, "%02d:%02d:%02d %02d/%02d/%04d", 
+                  dateTime.Hour(), dateTime.Minute(), dateTime.Second(),
+                  dateTime.Day(), dateTime.Month(), dateTime.Year());
+   }  
+   return lastError;
+}
+
+int RTClock::getFileName(char *fileName) {
+   RtcDateTime dateTime;
+   int lastError = get(&dateTime);
+   if (lastError == 0) {
+      sprintf(fileName, "/%04d/%02d/data.txt", 
+                  dateTime.Year(), dateTime.Month());
+   }
+   return lastError;   
+}
+
+int RTClock::getRecordDate(char *fileName) {
+   RtcDateTime dateTime;
+   int lastError = get(&dateTime);
+   if (lastError == 0) {
+      sprintf(fileName, "%02d %02d:%02d:%02d", 
+                  dateTime.Day(), dateTime.Hour(), dateTime.Minute(), dateTime.Second());
+   }
+   return lastError;   
+}
+
+int RTClock::get(RtcDateTime* dt) {
    int lastError = 0;
-   RtcDateTime dateTime = clock->GetDateTime();
+   *dt = clock->GetDateTime();
    if (!clock->IsDateTimeValid()) {
       lastError = clock->LastError();
       if (lastError != 0) {
@@ -58,10 +89,7 @@ int RTClock::getTime(char* buffer) {
          Serial.println("RTC lost confidence in the DateTime!");
       }
    }
-   sprintf(buffer, "%02d:%02d:%02d %02d/%02d/%04d", 
-                  dateTime.Hour(), dateTime.Minute(), dateTime.Second(),
-                  dateTime.Day(), dateTime.Month(), dateTime.Year());
-   return lastError;
+   return lastError;   
 }
 
 void RTClock::printDateTime(const RtcDateTime& dt) {

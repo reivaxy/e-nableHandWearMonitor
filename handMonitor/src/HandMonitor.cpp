@@ -10,13 +10,32 @@
  */
 
 #include "HandMonitor.h"
+#include "Storage.h"
+
 #define FPM_SLEEP_MAX_TIME 0xFFFFFFF
+#define LEVEL_CHECK_PERDIO_WHEN_ON_CHARGE 10000 // in milliseconds
 
 HandMonitor::HandMonitor(HandMonitorConfig* conf, int sda, int scl) {
    config = conf;
 }
 
-void HandMonitor::init() {
+// We want to keep code here as short as possible to keep consumption low
+// when there is nothing to do
+void HandMonitor::init() { 
+
+   isOnCharge = digitalRead(PIN_POWER_DETECT);
+
+   checkLevel();
+
+   if (isOnCharge) {
+      handleOnChargeMode();
+   } else {
+      deepSleep();
+   }
+}
+
+void HandMonitor::handleOnChargeMode() {
+   DebugPrintln("Module is being charged");
    clock = new RTClock();
    clock->setup();
    char dateTime[50];
@@ -25,19 +44,44 @@ void HandMonitor::init() {
       DebugPrintln(dateTime);
    } else {
       DebugPrintln("Invalid date time in RTC");
-   }     
-   
-   isOnCharge = digitalRead(PIN_POWER_DETECT);
+   }        
+   // Need to wake wifi up
+   WiFi.forceSleepWake();
+
+  if (!SPIFFS.begin()) {
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
+  FSInfo fs_info;
+  SPIFFS.info(fs_info);
+  Serial.printf("totalBytes : %d\n", fs_info.totalBytes);
+  Serial.printf("usedBytes : %d\n", fs_info.usedBytes);
+  Serial.printf("blockSize : %d\n", fs_info.blockSize);
+  Serial.printf("pageSize : %d\n", fs_info.pageSize);
+  Serial.printf("maxOpenFiles : %d\n", fs_info.maxOpenFiles);
+  Serial.printf("maxPathLength : %d\n", fs_info.maxPathLength);
+}
+
+void HandMonitor::checkLevel() {
+   // Level is high when device is not on worn
    int level = analogRead(PIN_SENSOR);
    DebugPrintf("Sensor level: %d\n", level);
 
-   if (isOnCharge) {
-      DebugPrintf("Module is being charged");
-      // Need to wake wifi up
-      WiFi.forceSleepWake();
-   } else {
-      deepSleep();
+   // Read previous state from ESP RTC memory.
+   // 0 means off (not worn), 1 means on
+   uint32_t previousState;
+   ESP.rtcUserMemoryRead(LAST_RTC_ADDR, (uint32_t*) &previousState, sizeof(uint32_t));
+   // The first time, memory contains random bits. Let's say previous state was 0
+   if(previousState != 0 && previousState != 1) {
+      previousState = 0;
    }
+
+   // If device was worn, but is no longer, or the opposite: record time and state
+   if((previousState == 1 && level > 512) || (previousState == 0 && level <= 512)) {
+      DebugPrintf("State changed, was %d\n", previousState);
+      Storage::recordStateChange(previousState);
+   }
+
 }
 
 void HandMonitor::deepSleep() {
@@ -46,6 +90,7 @@ void HandMonitor::deepSleep() {
    WiFi.forceSleepBegin(0);
    ESP.deepSleep( sleepTime * 1000000, WAKE_RF_DEFAULT );  // do not disable RF here, it's supposed to be handled by WiFi class 
 }
+
 void HandMonitor::loop() {
    isOnCharge = digitalRead(PIN_POWER_DETECT);
   
@@ -78,11 +123,17 @@ void HandMonitor::loop() {
       wifiAP->refresh();
       wifiSTA->refresh();
    }
+   
+   time_t timeNow = millis();
+   // Keep monitoriing level pin
+   if ((timeNow - lastTimeLevelCheck > LEVEL_CHECK_PERDIO_WHEN_ON_CHARGE)) {
+      checkLevel();
+      lastTimeLevelCheck = timeNow; 
+   }
 
    if (clock != NULL) {
       char dateTime[50];
-      time_t timeNow = millis();
-      if ((timeNow - lastTimeDisplay > 10000)) {
+      if ((timeNow - lastTimeDisplay > 60000)) {
          lastTimeDisplay = timeNow;
          int error = clock->getTime(dateTime);
          if (!error) {
@@ -90,7 +141,6 @@ void HandMonitor::loop() {
          } else {
             DebugPrintln("Invalid date time in RTC");
          }           
-         DebugPrintln(dateTime);
       }      
       
    }

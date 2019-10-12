@@ -23,7 +23,10 @@ class RTClock {
 public:
    void setup();
    void setup(const char* timeStr);
+   int get(RtcDateTime* dt);
    int getTime(char *timeStr);
+   int getFileName(char *fileName);
+   int getRecordDate(char *recordDate);
    void printDateTime(const RtcDateTime& dt);
    int toInt(const char*, int length);
 

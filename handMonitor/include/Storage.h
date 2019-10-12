@@ -1,36 +1,23 @@
- /* 
+/* 
  *  =============================================================================================================================================
  *  Project : Hand Monitoring e-Nable France
  *  Author  : Xavier Grosjean & Thomas Broussard
  * 
  *  ---------------------------------------------------------------------------------------------------------------------------------------------
- *  Description : Handle web API
+ *  Description : Hand monitor
  * 
  * =============================================================================================================================================
  */
 
- #pragma once
- 
- #include <ESP8266WebServer.h>
- #include "config.h"
- #include "Ota.h"
- #include "debug.h"
+#pragma once
 
-class Api {
+#include "FS.h"
+
+#define LAST_RTC_ADDR 124  // address of last 4 bytes of 512: (512/4)-4 
+
+class Storage {
 public:
-   Api(HandMonitorConfig* _config);
-
-   HandMonitorConfig *config;
-   ESP8266WebServer* server = NULL;
-   Ota* ota = NULL;
-
-   void init();
-   void close();
-   void refresh();
-   void printHomePage();
-   void initSave();
-   void startOTA();
-   void sendHtml(const char* html, int code);
-   void sendText(const char* html, int code);
-
+   static void recordStateChange(int previousState);
+   static void listFiles(char *list, int size);
 };
+

@@ -10,6 +10,7 @@
  */
 
 #include "Api.h"
+#include "Storage.h"
 #include "initPage.h"
 
 Api::Api(HandMonitorConfig *_config) {
@@ -34,8 +35,14 @@ void Api::init() {
    // Reset to factory defaults
    server->on("/reset", HTTP_POST, [&]() {
       DebugPrintln("POST /reset");
+      Serial.println("Reset module before 10 seconds to cancel reset");
+      delay(10000);
+      sendText("Reset module before 10 seconds to cancel reset", 200);
+      Serial.println("Resetting to factory ");
       config->initFromDefault();
       config->saveToEeprom();
+      SPIFFS.begin();
+      SPIFFS.format();      
       ESP.restart();
    });   
    
@@ -46,6 +53,18 @@ void Api::init() {
       char message[200];
       sprintf(message, MSG_WAITING_OTA, WiFi.softAPIP().toString().c_str());
       sendHtml(message, 200);
+   });
+
+   // list files in SPIFFS
+   server->on("/files", HTTP_GET, [&]() {
+      DebugPrintln("GET /files");
+      char list[3000 + 1]; // TODO, this is temporary
+      *list = 0;
+      Storage::listFiles(list, 3000);
+      DebugPrintf("List size : %d\n", strlen(list));
+      //sendText(list, 200);
+      sendText("ok", 200);
+
    });
 
    server->begin();
@@ -115,6 +134,11 @@ void Api::sendHtml(const char* message, int code) {
    server->sendHeader("Connection", "close");
    server->send(code, "text/html", htmlPage);
    free(htmlPage);
+}
+
+void Api::sendText(const char* message, int code) {
+   server->sendHeader("Connection", "close");
+   server->send(code, "text/plain", message);   
 }
 
 void Api::refresh() {

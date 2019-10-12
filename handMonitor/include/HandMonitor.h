@@ -25,7 +25,8 @@ public:
   HandMonitor(HandMonitorConfig* config, int sda, int scl);
   void loop();
   void init();
-  void debugMem(const char* msg);
+  void handleOnChargeMode();
+  void checkLevel();
   void deepSleep();
   
   boolean isOnCharge = false;
@@ -35,6 +36,7 @@ public:
   HandMonitorConfig* config = NULL;
   RTClock *clock = NULL;
   time_t lastTimeDisplay = 0;
+  time_t lastTimeLevelCheck = 0;
   int sleepTime = 10; // for now, will be in configuration later.
 
 };

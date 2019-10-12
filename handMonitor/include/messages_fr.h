@@ -23,3 +23,4 @@
 #define MSG_WAITING_OTA "Prêt pour OTA sur IP %s"
 #define MSG_CONFIG_SAVED "Données sauvées"
 #define MSG_RESET "Reset"
+#define MSG_FILE_LIST "Liste de fichiers"
