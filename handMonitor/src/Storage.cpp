@@ -26,25 +26,65 @@ void Storage::recordStateChange(int previousState) {
 
 }
 
-void Storage::listFiles(char *list, int size) {
+void Storage::listFiles(char **list) {
    if (!SPIFFS.begin()) {
       Serial.println("An Error has occurred while mounting SPIFFS");
       return;
-   }    
+   }  
+   int size = DEFAULT_LIST_ALLOC - 1;
+   *list = (char*)malloc(DEFAULT_LIST_ALLOC); 
+   **list = 0;
+
    DebugPrintln("Listing files:");
    Dir dir = SPIFFS.openDir("/");
    while(dir.next()) {
-      DebugPrintln(dir.fileName());
-      strlcat(list, dir.fileName().c_str(), size);
+      char *fileName = strdup(dir.fileName().c_str());
+      DebugPrintln(fileName);
+      // If not enough space to store file name, realloc a "big" chunk
+      // to avoid reallocating each time
+      int remaining = size - strlen(*list);
+      if(remaining < (strlen(fileName) + 1)) {
+         DebugPrintln("Reallocating list buffer");
+         size += 6*DEFAULT_LIST_ALLOC;
+         *list = (char *)realloc(*list, size);
+      }
+      strlcat(*list, fileName, size);
+      free(fileName);
    }
 
    DebugPrintln("File content:");
-   File f = SPIFFS.open("/2019/10/data.txt", "r");
+   File f = SPIFFS.open("/2019/10.txt", "r");
    int chr;
    while(f.available()) {
       chr = f.read();
       Serial.printf("%c", chr);
    }
    f.close();
-}   
+}
+
+void Storage::createFakeData() {
+   int yearCount = 3;
+   int monthCount = 4;
+   int dayCount = 10;
+   int startYear = 2015;
+   int startMonth = 8;
+   int startDay = 7;
+   if (!SPIFFS.begin()) {
+      Serial.println("An Error has occurred while mounting SPIFFS");
+      return;
+   }    
+   for(int y = 0 ; y < yearCount; y++) {
+      for(int m = 0 ; m < monthCount; m++) {
+         for(int d = 0; d < dayCount; d ++) {
+            char fileName[30];
+            sprintf(fileName, "/%04d/%02d.txt", startYear + y, startMonth + m);
+            File f = SPIFFS.open(fileName, "a+");
+            f.printf("%02d 10:02:30,1", startDay + d);
+            f.printf("%02d 14:12:08,0", startDay + d);
+            f.close();
+            yield(); 
+         }
+      }
+   }
+}
 

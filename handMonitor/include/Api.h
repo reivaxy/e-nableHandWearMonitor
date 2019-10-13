@@ -27,9 +27,12 @@ public:
    void init();
    void close();
    void refresh();
+   void printAdminPage();
    void printHomePage();
+   void securityDelayWarning(char* msg);
    void initSave();
    void startOTA();
+   void listFiles();
    void sendHtml(const char* html, int code);
    void sendText(const char* html, int code);
 

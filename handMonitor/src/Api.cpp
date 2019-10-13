@@ -12,6 +12,7 @@
 #include "Api.h"
 #include "Storage.h"
 #include "initPage.h"
+#include "adminPage.h"
 
 Api::Api(HandMonitorConfig *_config) {
    config = _config;
@@ -25,6 +26,11 @@ void Api::init() {
       DebugPrintln("GET /");
       printHomePage();
    });
+   // Display "admin" " page
+   server->on("/admin", HTTP_GET, [&]() {
+      DebugPrintln("GET /admin");
+      printAdminPage();
+   });
 
    // Save config parameters
    server->on("/initSave", HTTP_POST, [&]() {
@@ -35,9 +41,7 @@ void Api::init() {
    // Reset to factory defaults
    server->on("/reset", HTTP_POST, [&]() {
       DebugPrintln("POST /reset");
-      Serial.println("Reset module before 10 seconds to cancel reset");
-      delay(10000);
-      sendText("Reset module before 10 seconds to cancel reset", 200);
+      securityDelayWarning("full reset");
       Serial.println("Resetting to factory ");
       config->initFromDefault();
       config->saveToEeprom();
@@ -45,34 +49,55 @@ void Api::init() {
       SPIFFS.format();      
       ESP.restart();
    });   
+   // Create fake data
+   server->on("/createFakeData", HTTP_POST, [&]() {
+      DebugPrintln("POST /createFakeData");
+      securityDelayWarning("fake data creation");
+      Storage::createFakeData();
+   });   
    
    // Process OTA
    server->on("/ota", HTTP_POST, [&]() {
       DebugPrintln("POST /ota");
-      startOTA();
       char message[200];
       sprintf(message, MSG_WAITING_OTA, WiFi.softAPIP().toString().c_str());
       sendHtml(message, 200);
+      startOTA();
    });
 
    // list files in SPIFFS
-   server->on("/files", HTTP_GET, [&]() {
+   server->on("/listFiles", HTTP_GET, [&]() {
       DebugPrintln("GET /files");
-      char list[3000 + 1]; // TODO, this is temporary
-      *list = 0;
-      Storage::listFiles(list, 3000);
-      DebugPrintf("List size : %d\n", strlen(list));
-      //sendText(list, 200);
-      sendText("ok", 200);
-
+      listFiles();
    });
 
    server->begin();
 }
 
+void Api::securityDelayWarning(char *msg) {
+   Serial.printf("Reset module before 10 seconds to cancel %s", msg);
+   sendHtml("Reset module before 10 seconds to cancel reset", 200);
+   delay(10000);
+}
+
+void Api::listFiles() {
+   char *list = NULL;
+   Storage::listFiles(&list);
+   if(list != NULL) {
+      DebugPrintf("List size : %d\n", strlen(list));
+      sendHtml(list, 200);
+      free(list);
+   }
+}
+
 void Api::printHomePage() {
    sendHtml(initPage, 200);
 }
+
+void Api::printAdminPage() {
+   sendHtml(adminPage, 200);
+}
+
 void Api::close() {
    server->close();
    delete server;

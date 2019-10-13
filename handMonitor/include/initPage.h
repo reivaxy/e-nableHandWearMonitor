@@ -32,10 +32,7 @@ char initPage[] = "\
 <form action='/ota' method='post'>\
   <input type='submit' value='" MSG_START_OTA "'/>\
 </form>\
-<form action='/reset' method='post'>\
-  <input type='submit' value='" MSG_RESET "'/>\
-</form>\
-<a href='/files'>" MSG_FILE_LIST "</a>\
+<a href='/listFiles'>" MSG_FILE_LIST "</a>\
 </body>\
 </html>\
 ";

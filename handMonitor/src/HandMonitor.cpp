@@ -15,18 +15,14 @@
 #define FPM_SLEEP_MAX_TIME 0xFFFFFFF
 #define LEVEL_CHECK_PERDIO_WHEN_ON_CHARGE 10000 // in milliseconds
 
-HandMonitor::HandMonitor(HandMonitorConfig* conf, int sda, int scl) {
-   config = conf;
+HandMonitor::HandMonitor(int sda, int scl) {
 }
 
 // We want to keep code here as short as possible to keep consumption low
 // when there is nothing to do
 void HandMonitor::init() { 
-
    isOnCharge = digitalRead(PIN_POWER_DETECT);
-
    checkLevel();
-
    if (isOnCharge) {
       handleOnChargeMode();
    } else {
@@ -36,6 +32,11 @@ void HandMonitor::init() {
 
 void HandMonitor::handleOnChargeMode() {
    DebugPrintln("Module is being charged");
+   // Get wifi info from eeprom-saved config
+   if (config == NULL) {
+      config = new HandMonitorConfig("Hand Monitor");
+      config->init();   
+   }
    clock = new RTClock();
    clock->setup();
    char dateTime[50];
@@ -72,6 +73,8 @@ void HandMonitor::checkLevel() {
    uint32_t previousState;
    ESP.rtcUserMemoryRead(LAST_RTC_ADDR, (uint32_t*) &previousState, sizeof(uint32_t));
    // The first time, memory contains random bits. Let's say previous state was 0
+   // Random value could be 0 or 1, so we could store some larger data to better detect init condition. 
+   // Not worth it, to me.
    if(previousState != 0 && previousState != 1) {
       previousState = 0;
    }
