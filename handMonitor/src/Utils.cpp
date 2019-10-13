@@ -3,5 +3,5 @@
 
 void Utils::checkHeap(const char* msg) {
     uint32_t freeMem = system_get_free_heap_size();
-    DebugPrintf("Heap size After %s: %d\n", msg, freeMem); 
+    DebugPrintf("Heap size '%s': %d\n", msg, freeMem); 
 }

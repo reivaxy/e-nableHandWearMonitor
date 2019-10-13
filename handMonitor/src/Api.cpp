@@ -71,23 +71,66 @@ void Api::init() {
       listFiles();
    });
 
+   // Read one file in SPIFFS
+   server->on("/readFile", HTTP_GET, [&]() {
+      DebugPrintln("GET /files");
+      readFile(server->arg("file").c_str());
+   });
+
    server->begin();
 }
 
-void Api::securityDelayWarning(char *msg) {
+void Api::securityDelayWarning(const char *msg) {
    Serial.printf("Reset module before 10 seconds to cancel %s", msg);
    sendHtml("Reset module before 10 seconds to cancel reset", 200);
    delay(10000);
 }
 
+void Api::readFile(const char* fileName) {
+   DebugPrintf("Reading %s\n", fileName);
+   Utils::checkHeap("Before reading file");
+   LineList lineList; // processing by lines offers more flexibility
+   Storage::readFile(fileName, &lineList);
+   size_t bufferSize = 1000 ;
+   char* page = (char *)malloc(bufferSize);
+   *page = 0;
+   for (FileList::iterator it = lineList.begin(); it != lineList.end(); it++) {
+      char fileLine[100];
+      sprintf(fileLine, "%s\n", *it);
+      if(strlen(page) + strlen(fileLine) > bufferSize + 1) {
+         DebugPrintln("Reallocating file content buffer");
+         bufferSize += 1000;
+         page = (char *) realloc(page, bufferSize);
+      }
+      strlcat(page, *it, bufferSize);
+      free(*it);
+   }   
+   Utils::checkHeap("After reading file");
+   sendText(page, 200);
+   free(page);
+}
+
 void Api::listFiles() {
-   char *list = NULL;
-   Storage::listFiles(&list);
-   if(list != NULL) {
-      DebugPrintf("List size : %d\n", strlen(list));
-      sendHtml(list, 200);
-      free(list);
+   Utils::checkHeap("Before file listing");
+   FileList fileList;
+   Storage::listFiles(&fileList);
+   size_t bufferSize = 1000 ;
+   char* page = (char *)malloc(bufferSize);
+   *page = 0;
+   for (FileList::iterator it = fileList.begin(); it != fileList.end(); it++) {
+      char fileLine[100];
+      sprintf(fileLine, "<a href='/readFile?file=%s'>%s</a></br>", *it, *it); // TODO: filename should be urlencoded...
+      if(strlen(page) + strlen(fileLine) > bufferSize + 1) {
+         DebugPrintln("Reallocating file list buffer");
+         bufferSize += 1000;
+         page = (char *) realloc(page, bufferSize);
+      }
+      strlcat(page, fileLine, bufferSize);
+      free(*it);
    }
+   sendHtml("File list", page, 200);
+   free(page);
+   Utils::checkHeap("After file listing");
 }
 
 void Api::printHomePage() {
@@ -153,9 +196,13 @@ void Api::startOTA() {
 }
 
 void Api::sendHtml(const char* message, int code) {
-   char html[] = "<html><head><meta name='viewport' content='width=device-width, initial-scale=1'><meta charset='utf-8'></head><body>%s</body></html>";
-   char *htmlPage = (char *)malloc(strlen(html) + strlen(message) + 1);  // +1 is useless since %s is replaced ;)
-   sprintf(htmlPage, html, message);
+   sendHtml("", message, code);
+}
+
+void Api::sendHtml(const char* title, const char* message, int code) {
+   char html[] = "<html><head><title>%s</title><meta name='viewport' content='width=device-width, initial-scale=1'><meta charset='utf-8'></head><body>%s</body></html>";
+   char *htmlPage = (char *)malloc(strlen(html) + strlen(title) + strlen(message) + 1);  // +1 is actually useless since %s is replaced ;)
+   sprintf(htmlPage, html, title, message);
    server->sendHeader("Connection", "close");
    server->send(code, "text/html", htmlPage);
    free(htmlPage);

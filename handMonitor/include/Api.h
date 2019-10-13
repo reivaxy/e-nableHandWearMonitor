@@ -15,6 +15,7 @@
  #include "config.h"
  #include "Ota.h"
  #include "debug.h"
+ #include "utils.h"
 
 class Api {
 public:
@@ -29,11 +30,13 @@ public:
    void refresh();
    void printAdminPage();
    void printHomePage();
-   void securityDelayWarning(char* msg);
+   void securityDelayWarning(const char* msg);
    void initSave();
    void startOTA();
    void listFiles();
+   void readFile(const char *fileName);
    void sendHtml(const char* html, int code);
+   void sendHtml(const char* title, const char* message, int code);
    void sendText(const char* html, int code);
 
 };
