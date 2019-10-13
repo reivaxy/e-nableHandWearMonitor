@@ -24,3 +24,4 @@
 #define MSG_CONFIG_SAVED "Données sauvées"
 #define MSG_RESET "Reset"
 #define MSG_FILE_LIST "Liste de fichiers"
+#define MSG_CURRENT_TIME "Date et heure"

@@ -11,6 +11,7 @@
 
 #include "Api.h"
 #include "Storage.h"
+#include "RTClock.h"
 #include "initPage.h"
 #include "adminPage.h"
 
@@ -81,8 +82,9 @@ void Api::init() {
 }
 
 void Api::securityDelayWarning(const char *msg) {
-   Serial.printf("Reset module before 10 seconds to cancel %s", msg);
-   sendHtml("Reset module before 10 seconds to cancel reset", 200);
+   char message[100];
+   printf(message, "Reset module before 10 seconds to cancel %s", msg);
+   sendHtml(message, 200);
    delay(10000);
 }
 
@@ -134,7 +136,17 @@ void Api::listFiles() {
 }
 
 void Api::printHomePage() {
-   sendHtml(initPage, 200);
+   RTClock *clock = new RTClock();
+   clock->setup();
+   char dateTime[50];
+   int error = clock->getTime(dateTime);
+   if(error != 0) {
+      strcpy(dateTime, "Not initialized");
+   }
+   char *page = (char *)malloc(strlen(initPage) + 50);
+   sprintf(page, initPage, dateTime);
+   sendHtml(page, 200);
+   free(page);
 }
 
 void Api::printAdminPage() {

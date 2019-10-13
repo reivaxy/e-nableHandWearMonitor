@@ -23,6 +23,9 @@ char adminPage[] = "\
 <form action='/createFakeData' method='post'>\
   <input type='submit' value='Fake data'/>\
 </form>\
+<form action='/ota' method='post'>\
+  <input type='submit' value='Update Firmware'/>\
+</form>\
 </body>\
 </html>\
 ";

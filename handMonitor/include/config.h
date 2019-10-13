@@ -15,7 +15,7 @@
 
 // Increment this when new fields (or new default values) are added to HandMonitorConfigStruct
 // The module will then use default values, and will need to be configured again.
-#define CONFIG_BASE_VERSION 1
+#define CONFIG_BASE_VERSION 5
 
 // When not initialized yet, a module will open a Wifi access point with these:
 #define DEFAULT_AP_SSID "HandMonitor"

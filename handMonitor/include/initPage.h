@@ -19,6 +19,7 @@ char initPage[] = "\
 </head>\
 <body>\
 <h1>" MSG_INIT_WELCOME "</h1>\
+<span>" MSG_CURRENT_TIME ": %s UTC</span>\
 <form action='/initSave' method='post'>\
   <input name='apSsid' type='text' placeholder='" MSG_INIT_AP_SSID "'/><br/>\
   <input name='apPwd' type='text' placeholder='" MSG_INIT_AP_PWD "'/><br/>\
