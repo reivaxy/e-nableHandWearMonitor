@@ -29,6 +29,7 @@ char adminPage[] = "\
 <form action='/ota' method='post'>\
   <input type='submit' value='Update Firmware'/>\
 </form>\
+<pre>%s<pre>\
 </body>\
 </html>\
 ";

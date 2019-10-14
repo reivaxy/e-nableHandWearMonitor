@@ -160,7 +160,21 @@ void Api::printHomePage() {
 }
 
 void Api::printAdminPage() {
-   sendHtml(adminPage, 200);
+   int size = strlen(adminPage);
+   if (!SPIFFS.begin()) {
+      Serial.println("An Error has occurred while mounting SPIFFS");
+      return;
+   }
+   FSInfo fs_info;
+   SPIFFS.info(fs_info);
+   char spiffs[200];
+   sprintf(spiffs, "totalBytes : %d\nusedBytes : %d\nblockSize : %d\npageSize : %d\nmaxOpenFiles : %d\nmaxPathLength : %d\n",
+                  fs_info.totalBytes, fs_info.usedBytes, fs_info.blockSize, fs_info.pageSize, fs_info.maxOpenFiles, fs_info.maxPathLength);   
+   size += strlen(spiffs);
+   char *page = (char*) malloc(size + 1);
+   sprintf(page, adminPage, spiffs);
+   sendHtml(page, 200);
+   free(page);
 }
 
 void Api::close() {
