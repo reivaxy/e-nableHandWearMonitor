@@ -49,7 +49,16 @@ void Api::init() {
       SPIFFS.begin();
       SPIFFS.format();      
       ESP.restart();
-   });   
+   });
+    // erase SPIFFS only
+   server->on("/erase", HTTP_POST, [&]() {
+      DebugPrintln("POST /erase");
+      securityDelayWarning("SPIFFS erase");
+      Serial.println("Erasing SPIFFS ");
+      SPIFFS.begin();
+      SPIFFS.format();      
+   });
+
    // Create fake data
    server->on("/createFakeData", HTTP_POST, [&]() {
       DebugPrintln("POST /createFakeData");

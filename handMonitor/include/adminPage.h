@@ -18,7 +18,10 @@ char adminPage[] = "\
 <body>\
 <h1>BEWARE, dangerous functions</h1>\
 <form action='/reset' method='post'>\
-  <input type='submit' value='Reset'/>\
+  <input type='submit' value='Reset config & files'/>\
+</form>\
+<form action='/erase' method='post'>\
+  <input type='submit' value='Erase all files'/>\
 </form>\
 <form action='/createFakeData' method='post'>\
   <input type='submit' value='Fake data'/>\
