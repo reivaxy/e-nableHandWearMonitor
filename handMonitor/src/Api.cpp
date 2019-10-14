@@ -104,7 +104,7 @@ void Api::readFile(const char* fileName) {
          bufferSize += 1000;
          page = (char *) realloc(page, bufferSize);
       }
-      strlcat(page, *it, bufferSize);
+      strlcat(page, fileLine, bufferSize);
       free(*it);
    }   
    Utils::checkHeap("After reading file");
@@ -145,6 +145,7 @@ void Api::printHomePage() {
    }
    char *page = (char *)malloc(strlen(initPage) + 50);
    sprintf(page, initPage, dateTime);
+
    sendHtml(page, 200);
    free(page);
 }
