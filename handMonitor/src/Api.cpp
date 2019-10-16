@@ -50,7 +50,8 @@ void Api::init() {
          sprintf(messageIPSTA, "IP on %s: %s\\n", config->getSsid(), WifiSTA::getIp());
       }
       char message[200];
-      sprintf(message, "document.write(\"Date: %s\\nLocal IP: %s\\n%s\");", dateTime, WiFi.softAPIP().toString().c_str(), messageIPSTA);
+      sprintf(message, "document.write(\"Date: %s\\nIP on %s: %s\\n%s\");", dateTime, config->getAPSsid(), 
+                                                      WiFi.softAPIP().toString().c_str(), messageIPSTA);
       sendJs(message, 200);
    });
 
