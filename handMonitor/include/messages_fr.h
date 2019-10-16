@@ -11,7 +11,7 @@
 
 #pragma once
 
-#define MSG_INIT_WELCOME "Bienvenue"
+#define MSG_TITLE "Hand Monitor"
 #define MSG_INIT_AP_SSID "Nom réseau Wifi"
 #define MSG_INIT_AP_PWD "Mot de passe"
 #define MSG_INIT_HOME_SSID "Réseau Wifi box"
@@ -25,3 +25,7 @@
 #define MSG_RESET "Reset"
 #define MSG_FILE_LIST "Liste de fichiers"
 #define MSG_CURRENT_TIME "Date et heure"
+#define MSG_DATA "Accès aux données"
+#define MSG_CONFIG "Configuration"
+#define MSG_SYSTEM "Système"
+#define MSG_BUILD_DATE "Date logiciel"

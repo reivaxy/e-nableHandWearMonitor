@@ -11,6 +11,7 @@
 
 #include "Api.h"
 #include "Storage.h"
+#include "WifiSTA.h"
 #include "RTClock.h"
 #include "initPage.h"
 #include "adminPage.h"
@@ -31,6 +32,42 @@ void Api::init() {
    server->on("/admin", HTTP_GET, [&]() {
       DebugPrintln("GET /admin");
       printAdminPage();
+   });
+
+   // some dynamic data for home page
+   server->on("/info", HTTP_GET, [&]() {
+      DebugPrintln("GET /info");
+      RTClock *clock = new RTClock();
+      clock->setup();
+      char dateTime[50];
+      int error = clock->getTime(dateTime);
+      if(error != 0) {
+         strcpy(dateTime, "Not initialized");
+      }
+      char messageIPSTA[100];
+      *messageIPSTA = 0;
+      if (config->getSsid() != 0) {
+         sprintf(messageIPSTA, "IP on %s: %s\\n", config->getSsid(), WifiSTA::getIp());
+      }
+      char message[200];
+      sprintf(message, "document.write(\"Date: %s\\nLocal IP: %s\\n%s\");", dateTime, WiFi.softAPIP().toString().c_str(), messageIPSTA);
+      sendJs(message, 200);
+   });
+
+   // some dynamic data for admin page
+   server->on("/adminInfo", HTTP_GET, [&]() {
+      DebugPrintln("GET /adminInfo");
+      char spiffs[200];
+
+      if (SPIFFS.begin()) {
+         FSInfo fs_info;
+         SPIFFS.info(fs_info);
+         sprintf(spiffs, "document.write(\"totalBytes : %d\\nusedBytes : %d\\nblockSize : %d\\npageSize : %d\\nmaxOpenFiles : %d\\nmaxPathLength : %d\");",
+                     fs_info.totalBytes, fs_info.usedBytes, fs_info.blockSize, fs_info.pageSize, fs_info.maxOpenFiles, fs_info.maxPathLength);   
+      } else {
+         Serial.println("An Error has occurred while mounting SPIFFS");
+      }
+      sendJs(spiffs, 200);
    });
 
    // Save config parameters
@@ -92,7 +129,7 @@ void Api::init() {
 
 void Api::securityDelayWarning(const char *msg) {
    char message[100];
-   printf(message, "Reset module before 10 seconds to cancel %s", msg);
+   sprintf(message, "Reset module before 10 seconds to cancel %s", msg);
    sendHtml(message, 200);
    delay(10000);
 }
@@ -116,7 +153,7 @@ void Api::listFiles() {
    *page = 0;
    for (FileList::iterator it = fileList.begin(); it != fileList.end(); it++) {
       char fileLine[100];
-      sprintf(fileLine, "<a href='/readFile?file=%s'>%s</a></br>", *it, *it); // TODO: filename should be urlencoded...
+      sprintf(fileLine, "<a href='/readFile?file=%s'>%s</a><br/>", *it, *it); // TODO: filename should be urlencoded...
       if(strlen(page) + strlen(fileLine) > bufferSize + 1) {
          DebugPrintln("Reallocating file list buffer");
          bufferSize += 1000;
@@ -131,36 +168,11 @@ void Api::listFiles() {
 }
 
 void Api::printHomePage() {
-   RTClock *clock = new RTClock();
-   clock->setup();
-   char dateTime[50];
-   int error = clock->getTime(dateTime);
-   if(error != 0) {
-      strcpy(dateTime, "Not initialized");
-   }
-   char *page = (char *)malloc(strlen(initPage) + 50);
-   sprintf(page, initPage, dateTime);
-
-   sendHtml(page, 200);
-   free(page);
+   sendHtml(initPage, 200);
 }
 
 void Api::printAdminPage() {
-   int size = strlen(adminPage);
-   if (!SPIFFS.begin()) {
-      Serial.println("An Error has occurred while mounting SPIFFS");
-      return;
-   }
-   FSInfo fs_info;
-   SPIFFS.info(fs_info);
-   char spiffs[200];
-   sprintf(spiffs, "totalBytes : %d\nusedBytes : %d\nblockSize : %d\npageSize : %d\nmaxOpenFiles : %d\nmaxPathLength : %d\n",
-                  fs_info.totalBytes, fs_info.usedBytes, fs_info.blockSize, fs_info.pageSize, fs_info.maxOpenFiles, fs_info.maxPathLength);   
-   size += strlen(spiffs);
-   char *page = (char*) malloc(size + 1);
-   sprintf(page, adminPage, spiffs);
-   sendHtml(page, 200);
-   free(page);
+   sendHtml(adminPage, 200);
 }
 
 void Api::close() {
@@ -228,6 +240,11 @@ void Api::sendHtml(const char* title, const char* message, int code) {
    server->sendHeader("Connection", "close");
    server->send(code, "text/html", htmlPage);
    free(htmlPage);
+}
+
+void Api::sendJs(const char* message, int code) {
+   server->sendHeader("Connection", "close");
+   server->send(code, "text/javascript", message);   
 }
 
 void Api::sendText(const char* message, int code) {

@@ -9,7 +9,6 @@
  * =============================================================================================================================================
  */
 
-#pragma once
 
 #include <ESP8266WiFi.h>
 #include <NtpClientLib.h>
@@ -26,6 +25,7 @@ public:
   void connect();
   void disconnect();
   void refresh();
+  static char* getIp();
 
   HandMonitorConfig* config;
 
@@ -34,4 +34,7 @@ public:
   boolean disconnecting = false;
   WiFiEventHandler wifiSTAGotIpHandler, wifiSTADisconnectedHandler;
   RTClock *clock = NULL;
+  static char ipSta[20];
 };
+
+

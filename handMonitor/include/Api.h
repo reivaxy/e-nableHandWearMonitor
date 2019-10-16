@@ -38,5 +38,5 @@ public:
    void sendHtml(const char* html, int code);
    void sendHtml(const char* title, const char* message, int code);
    void sendText(const char* html, int code);
-
+   void sendJs(const char* message, int code);
 };

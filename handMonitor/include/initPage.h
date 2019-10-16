@@ -18,8 +18,18 @@ char initPage[] = "\
 <meta name='viewport' content='width=device-width, initial-scale=1'>\
 </head>\
 <body>\
-<h1>" MSG_INIT_WELCOME "</h1>\
-<span>" MSG_CURRENT_TIME ": %s UTC</span>\
+<h1>" MSG_TITLE "</h1>\
+<pre>\
+<script src='/info'></script>\
+" MSG_BUILD_DATE ": " __DATE__ " " __TIME__ "\
+</pre>\
+<br/>\
+<h2>" MSG_DATA "</h2>\
+<form action='/listFiles' method='get'>\
+  <input type='submit' value='" MSG_FILE_LIST "'/>\
+</form>\
+<hr/>\
+<h2>" MSG_CONFIG "</h2>\
 <form action='/initSave' method='post'>\
   <input name='apSsid' type='text' placeholder='" MSG_INIT_AP_SSID "'/><br/>\
   <input name='apPwd' type='text' placeholder='" MSG_INIT_AP_PWD "'/><br/>\
@@ -30,10 +40,11 @@ char initPage[] = "\
   <input name='apiKey' type='text' placeholder='" MSG_INIT_API_KEY "'/><br/> -->\
   <input type='submit'/>\
 </form>\
+<hr/>\
+<h2>" MSG_SYSTEM "</h2>\
 <form action='/ota' method='post'>\
   <input type='submit' value='" MSG_START_OTA "'/>\
 </form>\
-<a href='/listFiles'>" MSG_FILE_LIST "</a>\
 </body>\
 </html>\
 ";
