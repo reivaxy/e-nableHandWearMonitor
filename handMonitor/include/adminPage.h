@@ -29,7 +29,11 @@ char adminPage[] = "\
 <form action='/ota' method='post'>\
   <input type='submit' value='Update Firmware'/>\
 </form>\
-<pre>%s<pre>\
+<pre>\
+Build date:" __DATE__ " " __TIME__ "\n\
+SPIFFS:\n\
+%s\
+<pre>\
 </body>\
 </html>\
 ";

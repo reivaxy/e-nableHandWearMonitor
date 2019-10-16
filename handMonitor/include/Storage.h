@@ -24,7 +24,7 @@ class Storage {
 public:
    static void recordStateChange(int previousState);
    static void listFiles(FileList *fileList);
-   static void readFile(const char *fileName, LineList *lineList);
+   static void getFile(const char *fileName, File *f);
    static void createFakeData();
 };
 

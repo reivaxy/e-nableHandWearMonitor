@@ -39,27 +39,13 @@ void Storage::listFiles(FileList *fileList) {
    }
 }
 
-void Storage::readFile(const char *fileName, LineList *lineList) {
+void Storage::getFile(const char *fileName, File *f) {
    if (!SPIFFS.begin()) {
       Serial.println("An Error has occurred while mounting SPIFFS");
-      return;
+      return ;
    } 
-   DebugPrintf("Read file %s\n", fileName);
-   File f = SPIFFS.open(fileName, "r");
-   char oneLine[100];
-   char *ptr = oneLine;
-   while(f.available()) {
-      int chr = f.read();
-      if(chr == 10) {
-         *ptr = 0;
-         ptr = oneLine;
-         lineList->push_back(strdup(oneLine));
-      } else {
-         *ptr = chr;
-         ptr ++;
-      }
-   }
-   f.close();
+   *f = SPIFFS.open(fileName, "r");
+   
 }
 
 void Storage::createFakeData() {

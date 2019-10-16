@@ -100,25 +100,11 @@ void Api::securityDelayWarning(const char *msg) {
 void Api::readFile(const char* fileName) {
    DebugPrintf("Reading %s\n", fileName);
    Utils::checkHeap("Before reading file");
-   LineList lineList; // processing by lines offers more flexibility
-   Storage::readFile(fileName, &lineList);
-   size_t bufferSize = 1000 ;
-   char* page = (char *)malloc(bufferSize);
-   *page = 0;
-   for (FileList::iterator it = lineList.begin(); it != lineList.end(); it++) {
-      char fileLine[100];
-      sprintf(fileLine, "%s\n", *it);
-      if(strlen(page) + strlen(fileLine) > bufferSize + 1) {
-         DebugPrintln("Reallocating file content buffer");
-         bufferSize += 1000;
-         page = (char *) realloc(page, bufferSize);
-      }
-      strlcat(page, fileLine, bufferSize);
-      free(*it);
-   }   
+   File file;
+   Storage::getFile(fileName, &file);
+   server->streamFile(file, "text/plain");
+   file.close();
    Utils::checkHeap("After reading file");
-   sendText(page, 200);
-   free(page);
 }
 
 void Api::listFiles() {

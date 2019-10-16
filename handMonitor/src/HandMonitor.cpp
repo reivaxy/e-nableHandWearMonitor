@@ -80,7 +80,9 @@ void HandMonitor::checkLevel() {
    }
 
    // If device was worn, but is no longer, or the opposite: record time and state
-   if((previousState == 1 && level > 512) || (previousState == 0 && level <= 512)) {
+   // Endurance test: simulate one change for each check => write in file each time
+   // if((previousState == 1 && level > 512) || (previousState == 0 && level <= 512)) {
+   if(true) {
       DebugPrintf("State changed, was %d\n", previousState);
       Storage::recordStateChange(previousState);
    }
