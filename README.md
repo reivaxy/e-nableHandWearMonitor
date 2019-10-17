@@ -38,7 +38,7 @@ You can then use an android app like "ESP8266 Loader" to upload the new binary f
 
 <img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/ESP8266Loader.png" width="400px">
 
-The blue led on the esp will then flash not too fast while waiting for the upload, and the frantically when the firmware is uploading.
+The blue led on the esp will then flash not too fast while waiting for the upload, and then frantically when the firmware is uploading.
 
 <img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/firmwareUpdate.png" width="400px">
 
@@ -52,7 +52,7 @@ After the upload is done (and verified) the esp will reboot, updated.
 
 The "File list" button will display a page listing all the files in the esp memory. One new file is created each month.
 
-Here, I have create fake test data files (dated before 2019), and you can see the current file at the time this is written (Oct. 2019):
+Here, I have created fake test data files (dated before 2019), and you can see the current file at the time this is written (Oct. 2019):
 
 <img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileList.png" width="400px">
 
@@ -70,6 +70,8 @@ Each entry is composed of the day, then the hour, minute, second, then the state
 It's actually a page where some dangerous feature are available: reset the full device (configuration and data files), erase all data files, create test data files...
 
 There is also some information on the SPIFFS memory usage, and more will be added if needed.
+
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/adminPage.png" width="400px">
 
 
 

@@ -39,10 +39,12 @@ void Ota::refresh() {
    if (otaReadyTime != 0) { 
       time_t now = millis();
       if (!otaIsStarted) {
-         int remainingTime = 180 - ((now - otaReadyTime) / 1000);
+         int remainingTime = 120 - ((now - otaReadyTime) / 1000);
          // OTA cancelled after 3mn 
          if (remainingTime <= 0) {
             DebugPrintln("OTA Cancelled by timeout, restarting");
+            pinMode(LED, OUTPUT);
+            digitalWrite(LED, 1); // 1 is off
             ESP.restart();
          }
          // slow blink while waiting for upload
@@ -50,7 +52,6 @@ void Ota::refresh() {
             pinMode(LED, OUTPUT);
             digitalWrite(LED, !digitalRead(LED));
             lastLedBlink = now;
-            // Serial.printf("blink %d\n", digitalRead(LED));
          }
       }
       ArduinoOTA.handle();

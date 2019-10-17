@@ -87,6 +87,7 @@ int RTClock::get(RtcDateTime* dt) {
       }
       else {
          Serial.println("RTC lost confidence in the DateTime!");
+         lastError = -1;
       }
    }
    return lastError;   
