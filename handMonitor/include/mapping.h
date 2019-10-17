@@ -21,7 +21,6 @@
 /** RTC Clock */
 #define PIN_RTC_SCL 4
 #define PIN_RTC_SDA 5
-#define PIN_RTC_VCC 16
 
 /** Sensor */
 #define PIN_SENSOR  A0

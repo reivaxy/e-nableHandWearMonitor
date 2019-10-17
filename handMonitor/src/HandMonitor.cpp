@@ -21,6 +21,7 @@ HandMonitor::HandMonitor(int sda, int scl) {
 // We want to keep code here as short as possible to keep consumption low
 // when there is nothing to do
 void HandMonitor::init() { 
+   pinMode(PIN_POWER_DETECT, INPUT);
    isOnCharge = digitalRead(PIN_POWER_DETECT);
    checkLevel();
    if (isOnCharge) {

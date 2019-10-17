@@ -10,5 +10,6 @@ public:
 
    bool otaIsStarted = false;
    time_t otaReadyTime = 0;
-
+   time_t lastLedBlink = 0;
+   time_t ledStatus = 0;
 };
