@@ -14,9 +14,9 @@
 #include <NtpClientLib.h>
 #include <TimeLib.h>
 
-#include "config.h"
 #include "debug.h"
 #include "RTClock.h"
+#include "config.h"
 
 class WifiSTA {
 public:
@@ -32,6 +32,7 @@ public:
   boolean connected = false;
   boolean connecting = false;
   boolean disconnecting = false;
+  time_t connectionAttemptTime = 0;
   WiFiEventHandler wifiSTAGotIpHandler, wifiSTADisconnectedHandler;
   RTClock *clock = NULL;
   static char ipSta[20];

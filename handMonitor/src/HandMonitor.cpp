@@ -11,6 +11,7 @@
 
 #include "HandMonitor.h"
 #include "Storage.h"
+#include "Led.h"
 
 #define FPM_SLEEP_MAX_TIME 0xFFFFFFF
 #define LEVEL_CHECK_PERDIO_WHEN_ON_CHARGE 10000 // in milliseconds
@@ -98,14 +99,9 @@ void HandMonitor::deepSleep() {
 
 void HandMonitor::loop() {
    isOnCharge = digitalRead(PIN_POWER_DETECT);
-  
    // when module is bein charged, open the wifi access point
    if (isOnCharge && !wasOnCharge) {
       wasOnCharge = true;
-      // wifi_fpm_do_wakeup();
-	   // wifi_fpm_close();
-      // wifi_set_opmode(SOFTAP_MODE);
-      // wifi_station_connect();
       wifiAP = new WifiAP(config);
       wifiAP->open();
       wifiSTA = new WifiSTA(config);
@@ -117,10 +113,7 @@ void HandMonitor::loop() {
       wifiAP->close();
       delete(wifiAP);
       wifiSTA->disconnect();
-      delete(wifiSTA);
-      // wifi_set_sleep_type(MODEM_SLEEP_T);
-      // wifi_fpm_open();
-      // wifi_fpm_do_sleep(FPM_SLEEP_MAX_TIME);      
+      delete(wifiSTA);    
       Utils::checkHeap("onCharge off");
       deepSleep();
    }
@@ -149,5 +142,6 @@ void HandMonitor::loop() {
       }      
       
    }
+   Led::refresh();
 }
 

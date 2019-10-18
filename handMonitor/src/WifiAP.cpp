@@ -10,6 +10,7 @@
  */
 
 #include "WifiAP.h"
+#include "Led.h"
 
 WifiAP::WifiAP(HandMonitorConfig* _config) {
    config = _config;
@@ -23,6 +24,7 @@ void WifiAP::open() {
    api = new Api(config);
    api->init();
    opened = true; 
+   Led::blink(2000);
 }
 
 void WifiAP::close() {
@@ -35,6 +37,7 @@ void WifiAP::close() {
    opened = false;
    delete api;
    api = NULL;
+   Led::off();
 }
 
 void WifiAP::refresh() {

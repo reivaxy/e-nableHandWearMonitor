@@ -24,7 +24,7 @@ Connect your phone to this network, and you can open the configuration page at h
 
 Here is what the setup page looks like (for now, it may change and this picture may not be up to date):
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/setupPage.png" width="400px">
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/setupPage.png" width="300px">
 
 You can change the default ssid/pwd, and, optionally, provide your home wifi ssid and pwd. These are stored locally in the device memory, and never sent anywhere.
 
@@ -36,11 +36,11 @@ The setup page also displays a "Update firmware" button. When you click on it th
 
 You can then use an android app like "ESP8266 Loader" to upload the new binary from your phone connected to the wifi network, using the device default IP 192.168.4.1
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/ESP8266Loader.png" width="400px">
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/ESP8266Loader.png" width="300px">
 
 The blue led on the esp will then flash not too fast while waiting for the upload, and then frantically when the firmware is uploading.
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/firmwareUpdate.png" width="400px">
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/firmwareUpdate.png" width="300px">
 
 If you provided your home wifi ssid and password, you can upload using the IP on that network, too. 
 
@@ -54,11 +54,11 @@ The "File list" button will display a page listing all the files in the esp memo
 
 Here, I have created fake test data files (dated before 2019), and you can see the current file at the time this is written (Oct. 2019):
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileList.png" width="400px">
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileList.png" width="300px">
 
 Then, clicking on a file, you can display its content, or download it with a long press / download file.
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileContent.png" width="400px">
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileContent.png" width="300px">
 
 This file was made with a 10 seconds wake up period (instead of 2mn), and with a state change each time, to make a biiig file. I had no issue recording 15695 lines, in a 223K file. 
 
@@ -71,7 +71,7 @@ It's actually a page where some dangerous feature are available: reset the full 
 
 There is also some information on the SPIFFS memory usage, and more will be added if needed.
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/adminPage.png" width="400px">
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/adminPage.png" width="300px">
 
 
 

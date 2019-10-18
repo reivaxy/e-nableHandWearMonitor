@@ -1,26 +1,25 @@
 
 #include "Ota.h"
 #include "debug.h"
-
-#define LED 2
+#include "Led.h"
 
 void Ota::start() {
    DebugPrintln("Ready for OTA");
    // We want to handle a timeout, in case no upload occurs.
    otaReadyTime = millis();
+   Led::blink(500);
    ArduinoOTA.onStart([&]() {
       otaIsStarted = true;
    });  
    ArduinoOTA.onEnd([&]() {
-
+      Led::off(); // we'll restart, anyway
    });  
    ArduinoOTA.onProgress([&](unsigned int progress, unsigned int total) {
       if(progress == total) {
          DebugPrintln("Uploaded");
       }
       DebugPrintf("Progress: %u%%\n", (progress / (total / 100)));
-      pinMode(LED, OUTPUT);
-      digitalWrite(LED, !digitalRead(LED));
+      Led::toggle();  // no loop refresh during upload
    });
    ArduinoOTA.onError([&](ota_error_t error) {
       char msgErr[50];
@@ -43,16 +42,9 @@ void Ota::refresh() {
          // OTA cancelled after 3mn 
          if (remainingTime <= 0) {
             DebugPrintln("OTA Cancelled by timeout, restarting");
-            pinMode(LED, OUTPUT);
-            digitalWrite(LED, 1); // 1 is off
             ESP.restart();
          }
-         // slow blink while waiting for upload
-         if (now - lastLedBlink > 500) {
-            pinMode(LED, OUTPUT);
-            digitalWrite(LED, !digitalRead(LED));
-            lastLedBlink = now;
-         }
+
       }
       ArduinoOTA.handle();
    }

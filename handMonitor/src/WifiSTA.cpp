@@ -10,7 +10,9 @@
  */
 
 #include "WifiSTA.h"
+#include "WifiAP.h"
 #include "RTClock.h"
+#include "Led.h"
 
 char WifiSTA::ipSta[20];
 
@@ -24,7 +26,10 @@ void WifiSTA::connect() {
    }
    DebugPrintf("Connecting to %s\n", config->getSsid());
    WiFi.mode(WIFI_AP_STA);
+   connectionAttemptTime = millis();
    wifiSTAGotIpHandler = WiFi.onStationModeGotIP([&](WiFiEventStationModeGotIP ipInfo) {
+      connectionAttemptTime = 0;
+      connected = true;
       strcpy(ipSta, ipInfo.ip.toString().c_str());
       DebugPrintf("Connected to %s on IP %s\n", config->getSsid(), ipSta);
       DebugPrintf("Connecting to NTP server %s\n", config->getNtpServer());
@@ -33,6 +38,7 @@ void WifiSTA::connect() {
       // TODO NTP.setTimeZone(config->getGmtHourOffset(), config->getGmtMinOffset());
    }); 
    wifiSTADisconnectedHandler = WiFi.onStationModeDisconnected([&](WiFiEventStationModeDisconnected event) {
+      connected = false;
    
    });
 
@@ -66,4 +72,13 @@ char* WifiSTA::getIp() {
 
 void WifiSTA::refresh() {
    now();  // Needed to refresh the Time lib, so that NTP server is called
+   // If not connected to home wifi after X milliseconds, give up 
+   if(connectionAttemptTime > 0 && (millis() - connectionAttemptTime > 45000)) {
+      DebugPrintf("Aborting STA connection attemtp to: %s\n", config->getSsid());
+      connectionAttemptTime = 0;
+      WiFi.mode(WIFI_AP);
+      // Need to reopen Access Point
+      WifiAP *wifiAP = new WifiAP(config);
+      wifiAP->open();     
+   }
 }
