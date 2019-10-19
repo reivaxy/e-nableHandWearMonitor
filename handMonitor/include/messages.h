@@ -12,4 +12,11 @@
 #pragma once
 
 // This file only defines which message file should be used
-#include "messages_fr.h"
+
+// #define __HM__FR
+
+#ifdef __HM__FR
+   #include "messages_fr.h"
+#else
+   #include "messages_en.h"
+#endif
