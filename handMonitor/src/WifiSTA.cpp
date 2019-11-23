@@ -14,8 +14,6 @@
 #include "RTClock.h"
 #include "Led.h"
 
-char WifiSTA::ipSta[20];
-
 WifiSTA::WifiSTA(HandMonitorConfig* _config) {
    config = _config;
 }
@@ -30,12 +28,12 @@ void WifiSTA::connect() {
    wifiSTAGotIpHandler = WiFi.onStationModeGotIP([&](WiFiEventStationModeGotIP ipInfo) {
       connectionAttemptTime = 0;
       connected = true;
-      strcpy(ipSta, ipInfo.ip.toString().c_str());
-      DebugPrintf("Connected to %s on IP %s\n", config->getSsid(), ipSta);
+      DebugPrintf("Connected to %s on IP %s\n", config->getSsid(), ipInfo.ip.toString().c_str());
       DebugPrintf("Connecting to NTP server %s\n", config->getNtpServer());
       NTP.begin(config->getNtpServer());
       NTP.setInterval(20, 7200);  // retry, refresh
       // TODO NTP.setTimeZone(config->getGmtHourOffset(), config->getGmtMinOffset());
+
    }); 
    wifiSTADisconnectedHandler = WiFi.onStationModeDisconnected([&](WiFiEventStationModeDisconnected event) {
       connected = false;
@@ -64,10 +62,6 @@ void WifiSTA::connect() {
 
 void WifiSTA::disconnect() {
 
-}
-
-char* WifiSTA::getIp() {
-   return WifiSTA::ipSta;
 }
 
 void WifiSTA::refresh() {

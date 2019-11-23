@@ -22,7 +22,7 @@
 
 class HandMonitor {
 public:
-  HandMonitor(int sda, int scl);
+  HandMonitor();
   void loop();
   void init();
   void handleOnChargeMode();

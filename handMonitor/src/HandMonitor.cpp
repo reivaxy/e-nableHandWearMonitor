@@ -16,12 +16,13 @@
 #define FPM_SLEEP_MAX_TIME 0xFFFFFFF
 #define LEVEL_CHECK_PERDIO_WHEN_ON_CHARGE 10000 // in milliseconds
 
-HandMonitor::HandMonitor(int sda, int scl) {
+HandMonitor::HandMonitor() {
 }
 
 // We want to keep code here as short as possible to keep consumption low
 // when there is nothing to do
-void HandMonitor::init() { 
+void HandMonitor::init() {
+   Serial.begin(115200); 
    pinMode(PIN_POWER_DETECT, INPUT);
    isOnCharge = digitalRead(PIN_POWER_DETECT);
    checkLevel();

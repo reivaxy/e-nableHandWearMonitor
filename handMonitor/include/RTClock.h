@@ -16,7 +16,7 @@
 
 #include <Wire.h> // Using default SDA = 4, SCL = 5
 
-#include <RtcDS1307.h>
+#include <RtcDS3231.h>
 
 
 class RTClock {
@@ -30,5 +30,5 @@ public:
    void printDateTime(const RtcDateTime& dt);
    int toInt(const char*, int length);
 
-   RtcDS1307<TwoWire> *clock;
+   RtcDS3231<TwoWire> *clock;
 };

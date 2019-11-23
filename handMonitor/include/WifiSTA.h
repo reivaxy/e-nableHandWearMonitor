@@ -25,7 +25,6 @@ public:
   void connect();
   void disconnect();
   void refresh();
-  static char* getIp();
 
   HandMonitorConfig* config;
 
@@ -35,7 +34,6 @@ public:
   time_t connectionAttemptTime = 0;
   WiFiEventHandler wifiSTAGotIpHandler, wifiSTADisconnectedHandler;
   RTClock *clock = NULL;
-  static char ipSta[20];
 };
 
 

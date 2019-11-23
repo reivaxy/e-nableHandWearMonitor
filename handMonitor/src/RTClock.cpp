@@ -16,7 +16,8 @@
 void RTClock::setup() {   
    DebugPrintf("SDA: %d\n", SDA);
    DebugPrintf("SCL: %d\n", SCL);
-   clock = new RtcDS1307<TwoWire>(Wire);
+   Wire.begin(PIN_RTC_SDA, PIN_RTC_SCL);
+   clock = new RtcDS3231<TwoWire>(Wire);
    clock->Begin();  
 }
 

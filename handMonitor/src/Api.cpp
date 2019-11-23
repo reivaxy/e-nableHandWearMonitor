@@ -47,7 +47,7 @@ void Api::init() {
       char messageIPSTA[100];
       *messageIPSTA = 0;
       if (config->getSsid() != 0) {
-         sprintf(messageIPSTA, "IP %s: %s\\n", config->getSsid(), WifiSTA::getIp());
+         sprintf(messageIPSTA, "IP %s: %s\\n", config->getSsid(), WiFi.localIP().toString().c_str());
       }
       char message[200];
       sprintf(message, "document.write(\"Date: %s\\nIP %s: %s\\n%s\");", dateTime, config->getAPSsid(), 
