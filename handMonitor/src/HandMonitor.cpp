@@ -14,7 +14,7 @@
 #include "Led.h"
 
 #define FPM_SLEEP_MAX_TIME 0xFFFFFFF
-#define LEVEL_CHECK_PERDIO_WHEN_ON_CHARGE 10000 // in milliseconds
+#define LEVEL_CHECK_PERIOD_WHEN_ON_CHARGE 10000 // in milliseconds
 
 HandMonitor::HandMonitor() {
 }
@@ -24,6 +24,7 @@ HandMonitor::HandMonitor() {
 void HandMonitor::init() {
    Serial.begin(115200); 
    pinMode(PIN_POWER_DETECT, INPUT);
+   pinMode(PIN_IR_EMITTER, OUTPUT);
    isOnCharge = digitalRead(PIN_POWER_DETECT);
    checkLevel();
    if (isOnCharge) {
@@ -67,8 +68,11 @@ void HandMonitor::handleOnChargeMode() {
 }
 
 void HandMonitor::checkLevel() {
+   // Activate IR led
+   digitalWrite(PIN_IR_EMITTER, HIGH);
    // Level is high when device is not on worn
    int level = analogRead(PIN_SENSOR);
+   digitalWrite(PIN_IR_EMITTER, LOW);
    DebugPrintf("Sensor level: %d\n", level);
 
    // Read previous state from ESP RTC memory.
@@ -83,8 +87,7 @@ void HandMonitor::checkLevel() {
    }
 
    // If device was worn, but is no longer, or the opposite: record time and state
-   // Endurance test: simulate one change for each check => write in file each time
-   if((previousState == 1 && level > 512) || (previousState == 0 && level <= 512)) {
+   if((previousState == 1 && level > 1000) || (previousState == 0 && level <= 1000)) {
       DebugPrintf("State changed, was %d\n", previousState);
       Storage::recordStateChange(previousState);
    }
@@ -125,7 +128,7 @@ void HandMonitor::loop() {
    
    time_t timeNow = millis();
    // Keep monitoriing level pin
-   if ((timeNow - lastTimeLevelCheck > LEVEL_CHECK_PERDIO_WHEN_ON_CHARGE)) {
+   if ((timeNow - lastTimeLevelCheck > LEVEL_CHECK_PERIOD_WHEN_ON_CHARGE)) {
       checkLevel();
       lastTimeLevelCheck = timeNow; 
    }

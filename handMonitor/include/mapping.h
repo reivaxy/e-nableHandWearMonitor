@@ -28,4 +28,7 @@
 /** Charger detection */
 #define PIN_POWER_DETECT 12
 
+/** Infra red emitter */
+#define PIN_IR_EMITTER 13
+
 #endif
