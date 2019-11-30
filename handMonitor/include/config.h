@@ -42,6 +42,9 @@ struct HandMonitorConfigStruct:public XEEPROMConfigDataStruct {
 
   char ntpServer[URL_MAX_LENGTH + 1];  // ntp server differs on adobe network and public network
 
+  int sensorThreshold;  // 0-1024. Typically, around 200 (depending on resistor values on board)
+  int refreshInterval;  // in seconds
+
 };
 
 class HandMonitorConfig:public XEEPROMConfigClass {
@@ -67,6 +70,13 @@ public:
 
   void setNtpServer(const char* ntpServer);
   const char* getNtpServer(void);
+
+  void setSensorThreshold(int value);
+  int getSensorThreshold(void);
+
+  void setRefreshInterval(int value);
+  int getRefreshInterval(void);
+
 
   bool isHomeWifiConfigured(void);
   HandMonitorConfigStruct* _getDataPtr(void);

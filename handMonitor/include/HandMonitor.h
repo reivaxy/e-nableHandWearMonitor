@@ -26,7 +26,7 @@ public:
   void loop();
   void init();
   void handleOnChargeMode();
-  void checkLevel();
+  void checkLevel(boolean ignoreChanges);
   void deepSleep();
   
   boolean isOnCharge = false;
@@ -37,6 +37,5 @@ public:
   RTClock *clock = NULL;
   time_t lastTimeDisplay = 0;
   time_t lastTimeLevelCheck = 0;
-  int sleepTime = 10; // for now, will be in configuration later.
 
 };

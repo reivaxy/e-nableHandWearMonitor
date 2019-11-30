@@ -63,8 +63,9 @@ void Api::init() {
       if (SPIFFS.begin()) {
          FSInfo fs_info;
          SPIFFS.info(fs_info);
-         sprintf(spiffs, "document.write(\"totalBytes : %d\\nusedBytes : %d\\nblockSize : %d\\npageSize : %d\\nmaxOpenFiles : %d\\nmaxPathLength : %d\");",
-                     fs_info.totalBytes, fs_info.usedBytes, fs_info.blockSize, fs_info.pageSize, fs_info.maxOpenFiles, fs_info.maxPathLength);   
+         sprintf(spiffs, "document.write(\"totalBytes: %d\\nusedBytes: %d\\nblockSize: %d\\npageSize: %d\\nmaxOpenFiles: %d\\nmaxPathLength: %d\\nRefresh interval: %ds\\nSensor threshold: %d\");",
+                fs_info.totalBytes, fs_info.usedBytes, fs_info.blockSize, fs_info.pageSize, fs_info.maxOpenFiles, fs_info.maxPathLength,
+                      config->getRefreshInterval(), config->getSensorThreshold());   
       } else {
          Serial.println("An Error has occurred while mounting SPIFFS");
       }
@@ -212,6 +213,19 @@ void Api::initSave() {
       config->setPwd(homePwd.c_str());
       restart = true;
    }
+
+   String refreshInterval = server->arg("refreshInterval");
+   if (refreshInterval.length() > 0) {
+      config->setRefreshInterval(refreshInterval.toInt());
+      restart = true;
+   }
+
+   String sensorThreshold = server->arg("sensorThreshold");
+   if (sensorThreshold.length() > 0) {
+      config->setSensorThreshold(sensorThreshold.toInt());
+      restart = true;
+   }
+
 
    config->saveToEeprom();
    sendHtml(MSG_CONFIG_SAVED, 200);

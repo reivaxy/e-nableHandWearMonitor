@@ -29,3 +29,5 @@
 #define MSG_CONFIG "Configuration"
 #define MSG_SYSTEM "Système"
 #define MSG_BUILD_DATE "Date logiciel"
+#define MSG_INIT_SENSOR_THRESHOLD "Seuil de détection"
+#define MSG_INIT_REFRESH_INTERVAL "Intervale de réveil"

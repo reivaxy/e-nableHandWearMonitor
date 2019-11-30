@@ -27,6 +27,8 @@ void HandMonitorConfig::initFromDefault() {
   setSsid("");
   setPwd(""); 
   setNtpServer(DEFAULT_NTP_SERVER);
+  setSensorThreshold(200);
+  setRefreshInterval(10);
 }
 
 
@@ -82,4 +84,22 @@ bool HandMonitorConfig::isHomeWifiConfigured() {
   }
   return false;
 
+}
+
+void HandMonitorConfig::setSensorThreshold(int value) {
+  Serial.printf("SETTING THRESHOLD %d\n", value);
+  _getDataPtr()->sensorThreshold = value;    
+}
+
+int HandMonitorConfig::getSensorThreshold(void) {
+  return _getDataPtr()->sensorThreshold;
+}
+
+void HandMonitorConfig::setRefreshInterval(int value) {
+  Serial.printf("SETTING INTERVAL %d\n", value);
+  _getDataPtr()->refreshInterval = value;  
+}
+
+int HandMonitorConfig::getRefreshInterval(void) {
+  return _getDataPtr()->refreshInterval;
 }
