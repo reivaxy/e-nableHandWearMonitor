@@ -14,8 +14,6 @@
 #define countof(a) (sizeof(a) / sizeof(a[0]))
 
 void RTClock::setup() {   
-   DebugPrintf("SDA: %d\n", SDA);
-   DebugPrintf("SCL: %d\n", SCL);
    Wire.begin(PIN_RTC_SDA, PIN_RTC_SCL);
    clock = new RtcDS3231<TwoWire>(Wire);
    clock->Begin();  

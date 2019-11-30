@@ -22,7 +22,7 @@ HandMonitor::HandMonitor() {
 // We want to keep code here as short as possible to keep consumption low
 // when there is nothing to do
 void HandMonitor::init() {
-   Serial.begin(115200); 
+   Serial.begin(19200);  // Not too fast to not get too much garbage on wake up
    // Read config
    if (config == NULL) {
       config = new HandMonitorConfig("Hand Monitor");
@@ -78,7 +78,7 @@ void HandMonitor::checkLevel(boolean ignoreChanges) {
    digitalWrite(PIN_IR_EMITTER, LOW);
    int threshold = config->getSensorThreshold();
 
-   DebugPrintf("Sensor level: %d, threshold: %d\n", level, threshold);
+   DebugPrintf("Sensor: %d, threshold: %d\n", level, threshold);
 
    // Read previous state from ESP RTC memory.
    // 0 means off (not worn), 1 means on
@@ -92,8 +92,8 @@ void HandMonitor::checkLevel(boolean ignoreChanges) {
    }
 
    // If device was worn, but is no longer, or the opposite: record time and state
-   if (!ignoreChanges && ((previousState == 0 && level > threshold) || (previousState == 1 && level <= threshold))) {
-      DebugPrintf("State changed, was %d\n", previousState);
+   if (!ignoreChanges && ((previousState == 1 && level > threshold) || (previousState == 0 && level <= threshold))) {
+      DebugPrintf("Changed: was %s\n", previousState==0?"off":"on");
       Storage::recordStateChange(previousState);
    }
 
@@ -101,7 +101,7 @@ void HandMonitor::checkLevel(boolean ignoreChanges) {
 
 void HandMonitor::deepSleep() {
    int sleepTime = config->getRefreshInterval();
-   DebugPrintf("Going to sleep for %ds\n", sleepTime);
+   DebugPrintf("Sleep for %ds\n", sleepTime);
    WiFi.mode(WIFI_OFF);
    WiFi.forceSleepBegin(0);
    ESP.deepSleep( sleepTime * 1000000, WAKE_RF_DEFAULT );  // do not disable RF here, it's supposed to be handled by WiFi class 
