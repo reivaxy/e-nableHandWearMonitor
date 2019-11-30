@@ -61,9 +61,9 @@ Here, I have created fake test data files (dated before 2019), and you can see t
 
 Then, clicking on a file, you can display its content, or download it with a long press / download file.
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileContent.png" width="300px">
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileContent.png" width="200px">
 
-This file was made with a 10 seconds wake up period (instead of 2mn), and with a state change each time, to make a biiig file. I had no issue recording 15695 lines, in a 223K file. 
+This file was made with a 10 seconds wake up period, and with a state change each time, to make a biiig file. I had no issue recording 15695 lines, in a 223K file. 
 
 Each entry is composed of the day, then the hour, minute, second, then the state: 0 means device not worn, 1 means device worn.
 
