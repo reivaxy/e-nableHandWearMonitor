@@ -77,6 +77,31 @@ There is also some information on the SPIFFS memory usage, and more will be adde
 <img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/adminPage.png" width="300px">
 
 
+## The 1000 mAh model
+
+The prototype was built using a 1000mAh battery, which provides an autonomy of several days (still need to check how many exactly).
+
+It is not using the definitive PCB, some wires will be removed, some layout improved to ease assembly.
+
+
+Here are pictures of this device in its 3D printed case with a slide-in lid:
+
+
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/deviceOpen.jpg" width="300px">
+
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/device.jpg" width="300px">
+
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/backSide.jpg" width="300px">
+
+
+Solderless connections available on the PCB allow to monitor the serial port for debug messages:
+
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/monitoring.jpg" width="300px">
+
+Using a custom tool that clips in the lid rails:
+
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/monitoringTool.jpg" width="300px">
+
 
 
 
