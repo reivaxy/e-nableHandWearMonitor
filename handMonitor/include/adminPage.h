@@ -23,8 +23,8 @@ char adminPage[] = "\
   <input name='webSite' type='text' placeholder='" MSG_INIT_WEBSITE "'/><br/>\
   <input name='apiKey' type='text' placeholder='" MSG_INIT_API_KEY "'/><br/>\
   -->\
-  <input name='sensorThreshold' type='number' min='0' max='1024' placeholder='" MSG_INIT_SENSOR_THRESHOLD "' size='20'/><br/>\
-  <input name='refreshInterval' type='number' min='0' max='300' placeholder='" MSG_INIT_REFRESH_INTERVAL "' size='20'/><br/>\
+  <input name='sensorThreshold' type='number' min='0' max='1024' placeholder='" MSG_INIT_SENSOR_THRESHOLD "' style='width: 150px;'/><br/>\
+  <input name='refreshInterval' type='number' min='0' max='300' placeholder='" MSG_INIT_REFRESH_INTERVAL "' style='width: 150px;'/><br/>\
   <input type='submit'/>\
 </form>\
 <form action='/reset' method='post'>\
