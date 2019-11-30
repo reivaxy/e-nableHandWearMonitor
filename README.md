@@ -2,22 +2,25 @@
 
 This device is intended to track the time spans during which an E-nable device is worn by its owner.
 
-## How it works
+## How does it work?
 
-For now it relies on two metallic contacts that should touch the skin when the device is worn. Soon, an optical sensor will be tested, so that there is no allergy issues.
+It uses a sensor to detect that the device is worn. Two types of sensors are supported: either a pair of metallic contacts that should be in contact with the skin when the device is worn, or an infrared sensor, that does not need any contact with the skin, which avoids the risk of allergies.
 
-In "recording mode" which is as long as the battery lasts, and not plugged into an usb charger, the Esp8266 wakes up every 2 mn, checks the presence sensor, and compares it to the previous check.
-
-If there is a difference, it records the date and time in a file, saved the new state, and goes back to deep sleep for 2 mn. This allows to save battery life.
-
-If there is no difference, it just goes back to deep sleep for 2 mn. 
+The device has two modes: "recording" and "charging".
 
 
-In "charging mode", which is when an usb charger (or battery) is plugged in, it keeps doing the check, but won't sleep.
+In "recording mode" which is as long as the battery lasts, and not plugged into an usb charger, the Esp8266 wakes up at a period that can be set and saved in permanent memory, checks the presence sensor, and compares its state to the previous time it was checked.
+
+If there is a difference, it records the date and time in a file, in the Esp flash memory, saves the new state, and goes back to deep sleep until it automatically wakes up again. This allows to save battery life.
+
+If there is no difference, it just goes back to deep sleep. 
+
+
+In "charging mode", which is when an usb charger is plugged in, it keeps doing the check but every second and won't sleep. The blue led blinks every 3 seconds to indicate the wifi is activated.
 
 Instead it opens up a wifi network. When the device has not been set up, the wifi network SSID is "HandMonitor", and password it the same.
 
-Connect your phone to this network, and you can open the configuration page at http://192.168.4.1
+By connecting your phone to this network, one can open the configuration page at http://192.168.4.1 and set up the device.
 
 
 ## Setup
@@ -32,19 +35,19 @@ Providing your home wifi connection information will allow to automatically setu
 
 If you don't provide your home wifi connection information you will be able to setup the time manually (work in progress), and download the data files to your computer or phone.
 
-The setup page also displays a "Update firmware" button. When you click on it the device will toggle to OTA (Over the Air) mode, and wait for a new firmware to be uploaded.
+The setup page also displays an "Update firmware" button. When you click on it the device will toggle to OTA (Over the Air) mode, and wait for a new firmware to be uploaded. The blue led will blink twice per second in this mode.
 
 You can then use an android app like "ESP8266 Loader" to upload the new binary from your phone connected to the wifi network, using the device default IP 192.168.4.1
 
 <img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/ESP8266Loader.png" width="300px">
 
-The blue led on the esp will then flash not too fast while waiting for the upload, and then frantically when the firmware is uploading.
+The blue led on the esp will then flash frantically while the firmware is uploading.
 
 <img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/firmwareUpdate.png" width="300px">
 
 If you provided your home wifi ssid and password, you can upload using the IP on that network, too. 
 
-After the upload is done (and verified) the esp will reboot, updated.
+After the upload is done (and verified) the esp will reboot, updated, and open the wifi networks depending on the settings provided.
 
 
 ## Data
@@ -67,7 +70,7 @@ Each entry is composed of the day, then the hour, minute, second, then the state
 
 ## "Admin" page
 
-It's actually a page where some dangerous feature are available: reset the full device (configuration and data files), erase all data files, create test data files...
+It's actually a page where some "dangerous" features are available: reset the full device (configuration and data files), erase all data files, create test data files...
 
 There is also some information on the SPIFFS memory usage, and more will be added if needed.
 
