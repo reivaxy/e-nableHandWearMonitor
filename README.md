@@ -16,9 +16,9 @@ If there is a difference, it records the date and time in a file, in the Esp fla
 If there is no difference, it just goes back to deep sleep. 
 
 
-In "charging mode", which is when an usb charger is plugged in, it keeps doing the check but every second and won't sleep. The blue led blinks every 3 seconds to indicate the wifi is activated.
+In "charging mode", which is when an usb charger is plugged in, it keeps doing the check but every second and won't sleep.
 
-Instead it opens up a wifi network. When the device has not been set up, the wifi network SSID is "HandMonitor", and password it the same.
+Instead it opens up a wifi network. When the device has not been set up, the wifi network SSID is "HandMonitor", and password it the same. The blue led blinks every 3 seconds to indicate the wifi is activated.
 
 By connecting your phone to this network, one can open the configuration page at http://192.168.4.1 and set up the device.
 
@@ -38,6 +38,8 @@ If you don't provide your home wifi connection information you will be able to s
 The setup page also displays an "Update firmware" button. When you click on it the device will toggle to OTA (Over the Air) mode, and wait for a new firmware to be uploaded. The blue led will blink twice per second in this mode.
 
 You can then use an android app like "ESP8266 Loader" to upload the new binary from your phone connected to the wifi network, using the device default IP 192.168.4.1
+
+In case a bug breaks the OTA feature in a firmware build, it can still be updated by opening the lid and using the 5 pad solderless connector with a special device to upload a fix through USB.
 
 <img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/ESP8266Loader.png" width="300px">
 
@@ -77,7 +79,7 @@ There is also some information on the SPIFFS memory usage, and more will be adde
 <img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/adminPage.png" width="300px">
 
 
-## The 1000 mAh model
+## The 1000 mAh version
 
 The prototype was built using a 1000mAh battery, which provides an autonomy of several days (still need to check how many exactly).
 
@@ -94,7 +96,7 @@ Here are pictures of this device in its 3D printed case with a slide-in lid:
 <img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/backSide.jpg" width="300px">
 
 
-Solderless connections available on the PCB allow to monitor the serial port for debug messages:
+Solderless connections available on the PCB allow to monitor the serial port for debug messages, as well as flash a new release of the firmware in case OTA feature is broken.
 
 <img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/monitoring.jpg" width="300px">
 
@@ -103,6 +105,9 @@ Using a custom tool that clips in the lid rails:
 <img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/monitoringTool.jpg" width="300px">
 
 
+The PCB is very thin to minimize weight and volume. This prototype PCB has a faulty IR sensor package layout and incorrect battery connection to charger, fixed for next version.
+
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/pcb.jpg" width="300px">
 
 
  
