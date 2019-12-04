@@ -14,7 +14,7 @@
 #include "mapping.h"
 #include "debug.h"
 
-#include <Wire.h> // Using default SDA = 4, SCL = 5
+#include <Wire.h> // default is SDA = 4, SCL = 5, not what we use
 
 #include <RtcDS3231.h>
 
