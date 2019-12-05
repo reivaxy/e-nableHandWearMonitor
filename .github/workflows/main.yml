@@ -16,7 +16,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -U platformio
       - name: Install XEEPROMConfig lib
-        run: platformio lib install https://github.com/reivaxy/XEEPROMConfig
+        run: platformio lib --global install https://github.com/reivaxy/XEEPROMConfig
+        working-directory: handMonitor
       - name: Build
         run: platformio run
         working-directory: handMonitor
