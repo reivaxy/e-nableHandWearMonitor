@@ -17,3 +17,4 @@ jobs:
           pip install -U platformio
       - name: Build
         run: platformio run
+        working-directory: handMonitor
