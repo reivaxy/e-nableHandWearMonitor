@@ -42,7 +42,7 @@ void HandMonitor::init() {
 void HandMonitor::handleOnChargeMode() {
    DebugPrintln("Module is being charged");
    // Consider device removed.
-   Storage::recordStateChange(1);
+   Storage::recordStateChange(1, 0);
    clock = new RTClock();
    clock->setup();
    char dateTime[50];
@@ -94,7 +94,7 @@ void HandMonitor::checkLevel(boolean ignoreChanges) {
    // If device was worn, but is no longer, or the opposite: record time and state
    if (!ignoreChanges && ((previousState == 1 && level > threshold) || (previousState == 0 && level <= threshold))) {
       DebugPrintf("Changed: was %s\n", previousState==0?"off":"on");
-      Storage::recordStateChange(previousState);
+      Storage::recordStateChange(previousState, level);
    }
 
 }

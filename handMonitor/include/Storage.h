@@ -22,7 +22,7 @@ typedef std::list<char*> LineList;
 
 class Storage {
 public:
-   static void recordStateChange(int previousState);
+   static void recordStateChange(int previousState, int level);
    static void listFiles(FileList *fileList);
    static void getFile(const char *fileName, File *f);
    static void createFakeData();

@@ -2,7 +2,7 @@
 #include "Storage.h"
 #include "RTClock.h"
 
-void Storage::recordStateChange(int previousState) {
+void Storage::recordStateChange(int previousState, int level) {
    uint32_t newState = (previousState == 0?1:0);
    RTClock *clock = new RTClock();
    clock->setup();
@@ -18,7 +18,7 @@ void Storage::recordStateChange(int previousState) {
       // Open current file to append data
       DebugPrintf("Updating file %s\n", fileName);
       File f = SPIFFS.open(fileName, "a+");
-      f.printf("%s %d\n", recordDate, newState);
+      f.printf("%s %d %d\n", recordDate, newState, level);
       f.close();
    }
    // Store new state in ESP RTC mem so that it can be read at next wake up.
@@ -65,8 +65,8 @@ void Storage::createFakeData() {
             char fileName[30];
             sprintf(fileName, "/%04d/%02d.txt", startYear + y, startMonth + m);
             File f = SPIFFS.open(fileName, "a+");
-            f.printf("%02d 10:02:30 1\n", startDay + d);
-            f.printf("%02d 14:12:08 0\n", startDay + d);
+            f.printf("%02d 10:02:30 1 234\n", startDay + d);
+            f.printf("%02d 14:12:08 0 456\n", startDay + d);
             f.close();
             yield(); 
          }
