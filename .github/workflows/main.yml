@@ -18,6 +18,9 @@ jobs:
       - name: Install XEEPROMConfig lib
         run: platformio lib --global install https://github.com/reivaxy/XEEPROMConfig
         working-directory: handMonitor
+      - name: Install NTPClient lib
+        run: platformio lib --global install https://github.com/arduino-libraries/NTPClient
+        working-directory: handMonitor
       - name: Build
         run: platformio run
         working-directory: handMonitor
