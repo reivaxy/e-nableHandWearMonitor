@@ -31,3 +31,4 @@
 #define MSG_BUILD_DATE "Date logiciel"
 #define MSG_INIT_SENSOR_THRESHOLD "Seuil de détection"
 #define MSG_INIT_REFRESH_INTERVAL "Intervale de réveil"
+#define MSG_INIT_TIME_OFFSET "Decalage horaire (mn)"

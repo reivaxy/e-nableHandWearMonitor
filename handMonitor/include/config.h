@@ -44,6 +44,7 @@ struct HandMonitorConfigStruct:public XEEPROMConfigDataStruct {
 
   int sensorThreshold;  // 0-1024. Typically, around 200 (depending on resistor values on board)
   int refreshInterval;  // in seconds
+  int timeOffset;  // in minutes
 
 };
 
@@ -76,6 +77,9 @@ public:
 
   void setRefreshInterval(int value);
   int getRefreshInterval(void);
+
+  void setTimeOffset(int value);
+  int getTimeOffset(void);
 
 
   bool isHomeWifiConfigured(void);

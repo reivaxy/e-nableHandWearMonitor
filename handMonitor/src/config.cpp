@@ -29,6 +29,7 @@ void HandMonitorConfig::initFromDefault() {
   setNtpServer(DEFAULT_NTP_SERVER);
   setSensorThreshold(200);
   setRefreshInterval(10);
+  setTimeOffset(60); // +1 hour offset: france winter time.
 }
 
 
@@ -96,10 +97,17 @@ int HandMonitorConfig::getSensorThreshold(void) {
 }
 
 void HandMonitorConfig::setRefreshInterval(int value) {
-  Serial.printf("SETTING INTERVAL %d\n", value);
   _getDataPtr()->refreshInterval = value;  
 }
 
 int HandMonitorConfig::getRefreshInterval(void) {
   return _getDataPtr()->refreshInterval;
+}
+
+void HandMonitorConfig::setTimeOffset(int value) {
+  _getDataPtr()->timeOffset = value;  
+}
+
+int HandMonitorConfig::getTimeOffset(void) {
+  return _getDataPtr()->timeOffset;
 }

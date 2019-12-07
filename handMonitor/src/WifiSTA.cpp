@@ -32,9 +32,13 @@ void WifiSTA::connect() {
       DebugPrintf("Connecting to NTP server %s\n", config->getNtpServer());
       NTP.begin(config->getNtpServer());
       NTP.setInterval(20, 7200);  // retry, refresh
-      // TODO NTP.setTimeZone(config->getGmtHourOffset(), config->getGmtMinOffset());
+      int offset = config->getTimeOffset(); // minutes
+      int hours = offset / 60;
+      int minutes = offset - (hours * 60);
+      NTP.setTimeZone(hours, minutes);
 
    }); 
+
    wifiSTADisconnectedHandler = WiFi.onStationModeDisconnected([&](WiFiEventStationModeDisconnected event) {
       connected = false;
    

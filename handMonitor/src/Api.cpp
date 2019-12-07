@@ -226,10 +226,15 @@ void Api::initSave() {
       restart = true;
    }
 
+   String timeOffset = server->arg("timeOffset");
+   if (timeOffset.length() > 0) {
+      config->setTimeOffset(timeOffset.toInt());
+      restart = true;
+      NTP.getTime();
+   }
 
    config->saveToEeprom();
    sendHtml(MSG_CONFIG_SAVED, 200);
-   // TODO: really restart ? or just reinit wifi network(s) ? (but there will be more than wifi config soon)
    if (restart) {
        ESP.restart(); 
    }  

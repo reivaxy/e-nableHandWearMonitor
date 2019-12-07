@@ -31,3 +31,4 @@
 #define MSG_BUILD_DATE "Firmware date"
 #define MSG_INIT_SENSOR_THRESHOLD "Sensor threshold"
 #define MSG_INIT_REFRESH_INTERVAL "Refresh interval"
+#define MSG_INIT_TIME_OFFSET "Time offset (mn)"

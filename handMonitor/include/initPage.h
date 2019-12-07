@@ -35,6 +35,7 @@ char initPage[] = "\
   <input name='apPwd' type='password' placeholder='" MSG_INIT_AP_PWD "'/><br/>\
   <input name='homeSsid' type='text' placeholder='" MSG_INIT_HOME_SSID "'/><br/>\
   <input name='homePwd' type='password' placeholder='" MSG_INIT_HOME_PWD "'/><br/>\
+  <input name='timeOffset' type='text' placeholder='" MSG_INIT_TIME_OFFSET "'/><br/>\
   <input type='submit'/>\
 </form>\
 <hr/>\
