@@ -31,8 +31,8 @@ public:
   
   boolean isOnCharge = false;
   boolean wasOnCharge = false;
-  WifiAP *wifiAP;
-  WifiSTA *wifiSTA;
+  WifiAP *wifiAP = NULL;
+  WifiSTA *wifiSTA = NULL;
   HandMonitorConfig* config = NULL;
   RTClock *clock = NULL;
   time_t lastTimeDisplay = 0;

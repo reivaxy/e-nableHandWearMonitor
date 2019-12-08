@@ -24,6 +24,7 @@ public:
    HandMonitorConfig *config;
    ESP8266WebServer* server = NULL;
    Ota* ota = NULL;
+   int level = 0;
 
    void init();
    void close();
@@ -39,4 +40,5 @@ public:
    void sendHtml(const char* title, const char* message, int code);
    void sendText(const char* html, int code);
    void sendJs(const char* message, int code);
+   void setLevel(int level);
 };

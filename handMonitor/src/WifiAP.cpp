@@ -47,3 +47,7 @@ void WifiAP::refresh() {
       }   
    }
 }
+
+Api* WifiAP::getApi() {
+   return api;
+}

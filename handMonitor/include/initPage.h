@@ -20,10 +20,9 @@ char initPage[] = "\
 <body>\
 <h1>" MSG_TITLE "</h1>\
 <pre>\
+" MSG_BUILD_DATE ": " __DATE__ " " __TIME__ "\n\
 <script src='/info'></script>\
-" MSG_BUILD_DATE ": " __DATE__ " " __TIME__ "\
 </pre>\
-<br/>\
 <h2>" MSG_DATA "</h2>\
 <form action='/listFiles' method='get'>\
   <input type='submit' value='" MSG_FILE_LIST "'/>\

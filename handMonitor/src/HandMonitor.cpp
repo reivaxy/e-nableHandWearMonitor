@@ -40,21 +40,26 @@ void HandMonitor::init() {
 }
 
 void HandMonitor::handleOnChargeMode() {
-   DebugPrintln("Module is being charged");
-   // Consider device removed.
-   Storage::recordStateChange(1, 0);
-   clock = new RTClock();
-   clock->setup();
-   char dateTime[50];
-   int error = clock->getTime(dateTime);
-   if (!error) {
-      DebugPrintln(dateTime);
-   } else {
-      DebugPrintln("Invalid date time in RTC");
-   }        
-   // Need to wake wifi up
-   WiFi.forceSleepWake();
-
+  DebugPrintln("Module is being charged");
+  // Consider device removed.
+  Storage::recordStateChange(1, 0);
+  clock = new RTClock();
+  clock->setup();
+  char dateTime[50];
+  int error = clock->getTime(dateTime);
+  if (!error) {
+     DebugPrintln(dateTime);
+  } else {
+     DebugPrintln("Invalid date time in RTC");
+  }              
+  // Need to wake wifi up
+  WiFi.forceSleepWake();
+  wasOnCharge = true;
+  wifiAP = new WifiAP(config);
+  wifiAP->open();
+  wifiSTA = new WifiSTA(config);
+  wifiSTA->connect();
+  Utils::checkHeap("onCharge on");
   if (!SPIFFS.begin()) {
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
@@ -70,7 +75,7 @@ void HandMonitor::handleOnChargeMode() {
 }
 
 // check sensor level and record changes
-void HandMonitor::checkLevel(boolean ignoreChanges) {
+void HandMonitor::checkLevel(boolean isOnCharge) {
    // Activate IR led
    digitalWrite(PIN_IR_EMITTER, HIGH);
    // Level is high when device is not on worn
@@ -91,10 +96,16 @@ void HandMonitor::checkLevel(boolean ignoreChanges) {
       previousState = 0;
    }
 
-   // If device was worn, but is no longer, or the opposite: record time and state
-   if (!ignoreChanges && ((previousState == 1 && level > threshold) || (previousState == 0 && level <= threshold))) {
+   // If device was worn, but is no longer, or the opposite: record time and state (except if on charge)
+   if (!isOnCharge && ((previousState == 1 && level > threshold) || (previousState == 0 && level <= threshold))) {
       DebugPrintf("Changed: was %s\n", previousState==0?"off":"on");
       Storage::recordStateChange(previousState, level);
+   }
+   if (isOnCharge && wifiAP != NULL) {
+      Api* api = wifiAP->getApi();
+      if (api != NULL) {
+         api->setLevel(level);
+      }
    }
 
 }
@@ -109,21 +120,15 @@ void HandMonitor::deepSleep() {
 
 void HandMonitor::loop() {
    isOnCharge = digitalRead(PIN_POWER_DETECT);
-   // when module is bein charged, open the wifi access point
-   if (isOnCharge && !wasOnCharge) {
-      wasOnCharge = true;
-      wifiAP = new WifiAP(config);
-      wifiAP->open();
-      wifiSTA = new WifiSTA(config);
-      wifiSTA->connect();
-      Utils::checkHeap("onCharge on");
-   }
+   // when module is no longer being charged, close the wifi access point
    if (wasOnCharge && !isOnCharge) {
       wasOnCharge = false;
       wifiAP->close();
       delete(wifiAP);
+      wifiAP = NULL;
       wifiSTA->disconnect();
-      delete(wifiSTA);    
+      delete(wifiSTA);  
+      wifiSTA = NULL;  
       Utils::checkHeap("onCharge off");
       deepSleep();
    }
