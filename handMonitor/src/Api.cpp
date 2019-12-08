@@ -47,11 +47,11 @@ void Api::init() {
       char messageIPSTA[100];
       *messageIPSTA = 0;
       if (config->getSsid() != 0) {
-         sprintf(messageIPSTA, "IP %s: %s\\n", config->getSsid(), WiFi.localIP().toString().c_str());
+         sprintf(messageIPSTA, "IP %s: %s", config->getSsid(), WiFi.localIP().toString().c_str());
       }
       char message[200];
-      sprintf(message, "document.write(\"Date: %s\\nIP %s: %s\\n%s\");", dateTime, config->getAPSsid(), 
-                                                      WiFi.softAPIP().toString().c_str(), messageIPSTA);
+      sprintf(message, "document.write(\"Date: %s\\nIP %s: %s\\n%s\\nLevel: %d\\n\");", dateTime, config->getAPSsid(), 
+                                                      WiFi.softAPIP().toString().c_str(), messageIPSTA, level);
       sendJs(message, 200);
    });
 
@@ -281,5 +281,9 @@ void Api::refresh() {
       // When ota is done, it resets the module, no need to check for the end.
       ota->refresh();
    }
+}
+
+void Api::setLevel(int _level) {
+   level = _level;
 }
 

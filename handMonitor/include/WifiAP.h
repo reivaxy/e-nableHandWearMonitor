@@ -23,6 +23,7 @@ public:
   void open();
   void close();
   void refresh();
+  Api* getApi();
 
   HandMonitorConfig* config;
   Api *api = NULL;
