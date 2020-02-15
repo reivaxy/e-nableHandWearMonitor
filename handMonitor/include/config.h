@@ -42,8 +42,8 @@ struct HandMonitorConfigStruct:public XEEPROMConfigDataStruct {
 
   char ntpServer[URL_MAX_LENGTH + 1];
 
-  int sensorThreshold;  // 0-1024. Typically, around 200 (depending on resistor values on board)
-  int refreshInterval;  // in seconds
+  uint16_t sensorThreshold;  // 0-1024. Typically, around 200 (depending on resistor values on board)
+  uint16_t refreshInterval;  // in seconds
   int timeOffset;  // in minutes
 
   bool initDone; // false on new module/new config version. True at first config save.
@@ -74,11 +74,11 @@ public:
   void setNtpServer(const char* ntpServer);
   const char* getNtpServer(void);
 
-  void setSensorThreshold(int value);
-  int getSensorThreshold(void);
+  void setSensorThreshold(uint16_t value);
+  uint16_t getSensorThreshold(void);
 
-  void setRefreshInterval(int value);
-  int getRefreshInterval(void);
+  void setRefreshInterval(uint16_t value);
+  uint16_t getRefreshInterval(void);
 
   void setTimeOffset(int value);
   int getTimeOffset(void);

@@ -1,3 +1,4 @@
 resources/originals
 *.gcode
 *.3mf
+handMonitor/handmonitor.code-workspace

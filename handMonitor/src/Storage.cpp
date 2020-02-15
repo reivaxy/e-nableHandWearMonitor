@@ -2,8 +2,9 @@
 #include "Storage.h"
 #include "RTClock.h"
 
-void Storage::recordStateChange(int previousState, int level) {
-   uint32_t newState = (previousState == 0?1:0);
+rtcStoredData Storage::_rtcData;
+
+void Storage::recordStateChange(int newState, int level) {
    RTClock *clock = new RTClock();
    clock->setup();
    char fileName[30];
@@ -21,9 +22,19 @@ void Storage::recordStateChange(int previousState, int level) {
       f.printf("%s %d %d\n", recordDate, newState, level);
       f.close();
    }
-   // Store new state in ESP RTC mem so that it can be read at next wake up.
-   ESP.rtcUserMemoryWrite(LAST_RTC_ADDR, (uint32_t*) &newState, sizeof(uint32_t));
 
+   // Store new state in ESP RTC mem so that it can be read at next wake up.
+   ESP.rtcUserMemoryWrite(LAST_RTC_ADDR, (uint32_t*) &_rtcData, sizeof(rtcStoredData));
+
+}
+
+rtcStoredData* Storage::getRtcData() {
+   ESP.rtcUserMemoryRead(LAST_RTC_ADDR, (uint32_t*) &_rtcData, sizeof(rtcStoredData));
+   return &_rtcData;
+}
+
+void Storage::saveRtcData(rtcStoredData* data) {
+   ESP.rtcUserMemoryWrite(LAST_RTC_ADDR, (uint32_t*) data, sizeof(rtcStoredData));
 }
 
 void Storage::listFiles(FileList *fileList) {

@@ -31,14 +31,14 @@ char adminPage[] = "\
 <div><span class='label'>" MSG_LEVEL ": </span><span class='value " JSON_TAG_LEVEL "'></span></div>\
 <div><span class='label'>" MSG_THRESHOLD ": </span><span class='value " JSON_TAG_THRESHOLD "'></span></div>\
 <div><span class='label'>" MSG_INIT_REFRESH_INTERVAL ": </span><span class='value " JSON_TAG_REFRESH "'></span></div>\
-<form action='/initSave' method='post'>\  
+<form action='/init' method='post'>\  
   <!-- not yet \
   <input name='ntpHost' type='text' placeholder='" MSG_INIT_NTP_HOST "'/><br/>\
   <input name='webSite' type='text' placeholder='" MSG_INIT_WEBSITE "'/><br/>\
   <input name='apiKey' type='text' placeholder='" MSG_INIT_API_KEY "'/><br/>\
   -->\
   <input name='sensorThreshold' type='number' min='0' max='1024' placeholder='" MSG_INIT_SENSOR_THRESHOLD "' style='width: 150px;'/><br/>\
-  <input name='refreshInterval' type='number' min='0' max='300' placeholder='" MSG_INIT_REFRESH_INTERVAL "' style='width: 150px;'/><br/>\
+  <input name='refreshInterval' type='number' min='0' max='255' placeholder='" MSG_INIT_REFRESH_INTERVAL "' style='width: 150px;'/><br/>\
   <input type='submit'/>\
 </form>\
 <hr/>\

@@ -222,7 +222,9 @@ void Api::close() {
 }
 
 void Api::initSave() {
+   rtcStoredData *rtcData = Storage::getRtcData();
    boolean restart = false;
+   boolean saveRtcData = false;
    // Read and save new name
    String name = server->arg("name");
    if (name.length() > 0) {
@@ -264,12 +266,16 @@ void Api::initSave() {
    if (refreshInterval.length() > 0) {
       config->setRefreshInterval(refreshInterval.toInt());
       restart = true;
+      saveRtcData = true;
+      rtcData->period = refreshInterval.toInt();
    }
 
    String sensorThreshold = server->arg("sensorThreshold");
    if (sensorThreshold.length() > 0) {
       config->setSensorThreshold(sensorThreshold.toInt());
       restart = true;
+      saveRtcData = true;
+      rtcData->threshold = sensorThreshold.toInt();
    }
 
    String timeOffset = server->arg("timeOffset");
@@ -280,6 +286,9 @@ void Api::initSave() {
    }
 
    sendHtml(MSG_CONFIG_SAVED, 200);
+   if (saveRtcData) {
+      Storage::saveRtcData(rtcData);
+   }
    delay(500);
    if (restart) {
       config->setInitDone(true);

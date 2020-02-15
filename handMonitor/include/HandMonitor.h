@@ -18,6 +18,7 @@
 #include "WifiAP.h"
 #include "WifiSTA.h"
 #include "Utils.h"
+#include "Storage.h"
 
 
 class HandMonitor {
@@ -26,8 +27,8 @@ public:
   void loop();
   void init();
   void handleOnChargeMode();
-  void checkLevel(boolean ignoreChanges);
-  void deepSleep();
+  void checkLevel(boolean ignoreChanges, rtcStoredData* rtcData);
+  void deepSleep(rtcStoredData* rtcData);
   
   boolean isOnCharge = false;
   boolean wasOnCharge = false;

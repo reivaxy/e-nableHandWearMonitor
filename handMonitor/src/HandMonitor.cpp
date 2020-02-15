@@ -14,7 +14,7 @@
 #include "Led.h"
 
 #define FPM_SLEEP_MAX_TIME 0xFFFFFFF
-#define LEVEL_CHECK_PERIOD_WHEN_ON_CHARGE 1000 // in milliseconds
+#define LEVEL_CHECK_PERIOD_WHEN_ON_CHARGE 2000 // in milliseconds
 
 HandMonitor::HandMonitor() {
 }
@@ -23,27 +23,28 @@ HandMonitor::HandMonitor() {
 // when there is nothing to do
 void HandMonitor::init() {
    Serial.begin(19200);  // Not too fast to not get too much garbage on wake up
-   // Read config for wake up delay and sensor threashold
-   // todo ? copy this config info into esp "rtc memory" so that no need to read config, might save power ?
-   if (config == NULL) {
-      config = new HandMonitorConfig("Hand Monitor");
-      config->init();   
-   }
+   // Read ESP rct memory for threshold, wake up period and previous state
+   rtcStoredData *rtcData = Storage::getRtcData();
+
    pinMode(PIN_POWER_DETECT, INPUT);
    pinMode(PIN_IR_EMITTER, OUTPUT);
    isOnCharge = digitalRead(PIN_POWER_DETECT);
-   checkLevel(isOnCharge);
+   checkLevel(isOnCharge, rtcData);
    if (isOnCharge) {
       handleOnChargeMode();
    } else {
-      deepSleep();
+      deepSleep(rtcData);
    }
 }
 
 void HandMonitor::handleOnChargeMode() {
   DebugPrintln("Module is being charged");
+   if (config == NULL) {
+      config = new HandMonitorConfig("Hand Monitor");
+      config->init();   
+   }
   // Consider device removed.
-  Storage::recordStateChange(1, 0);
+  Storage::recordStateChange(0, 0);
   clock = new RTClock();
   clock->setup();
   char dateTime[50];
@@ -76,32 +77,57 @@ void HandMonitor::handleOnChargeMode() {
 }
 
 // check sensor level and record changes
-void HandMonitor::checkLevel(boolean isOnCharge) {
+void HandMonitor::checkLevel(boolean isOnCharge, rtcStoredData* rtcData) {
    // Activate IR led
    digitalWrite(PIN_IR_EMITTER, HIGH);
    // Level is high when device is not on worn
    int level = analogRead(PIN_SENSOR);
    digitalWrite(PIN_IR_EMITTER, LOW);
-   int threshold = config->getSensorThreshold();
+   uint16_t threshold = rtcData->threshold;    // sensor threshold between worn and not worn
+   uint8_t previousState = rtcData->previous;  // previous state. 0: not worn, 1: worn
+   uint8_t counter = rtcData->counter;         // to register a change after 3 consecutive measures.
 
-   DebugPrintf("Sensor: %d, threshold: %d\n", level, threshold);
+   DebugPrintf("Sensor: %d, threshold: %d, previousState: %d, counter: %d\n", level, threshold, previousState, counter);
 
-   // Read previous state from ESP RTC memory.
-   // 0 means off (not worn), 1 means on
-   uint32_t previousState;
-   ESP.rtcUserMemoryRead(LAST_RTC_ADDR, (uint32_t*) &previousState, sizeof(uint32_t));
-   // The first time, memory contains random bits. Let's say previous state was 0
-   // Random value could be 0 or 1, so we could store some larger data to better detect init condition. 
-   // I don't think it's worth it, the device will be tested before being used.
-   if(previousState != 0 && previousState != 1) {
+   // The first time, rtc memory contains random bits. If values are unexpected set them to 0
+   if(previousState > 1) {
       previousState = 0;
+   }
+   if(counter > 3) {
+      counter = 0;
    }
 
    // If device was worn, but is no longer, or the opposite: record time and state (except if on charge)
-   if (!isOnCharge && ((previousState == 1 && level > threshold) || (previousState == 0 && level <= threshold))) {
-      DebugPrintf("Changed: was %s\n", previousState==0?"off":"on");
-      Storage::recordStateChange(previousState, level);
+   // Level > Threshold means device is not worn.
+   if (((previousState == 1 && level > threshold) || (previousState == 0 && level <= threshold))) {
+      DebugPrintf("Changed: was %s\n", previousState==0?"'off'":"'on'");
+      // If this is the third consecutive measure for this level ?
+      if (counter == 2) {
+         DebugPrintln("Third change in a row");
+         uint32_t newState = (previousState == 0?1:0);
+         rtcData->previous = newState;
+         // Record only when not in charge.
+         if (!isOnCharge) {
+            DebugPrintln("Not on charge, recording change");
+            Storage::recordStateChange(newState, level);
+         } else {
+            DebugPrintln("On charge, not recording change");
+         }
+         counter = 0;
+      } else {
+         counter ++;
+      }
+      rtcData->counter = counter;
+      Storage::saveRtcData(rtcData);
+   } else {
+      // Current level is same as previous level
+      // If counter was not 0, reset it to 0
+      if (counter != 0) {
+         rtcData->counter = 0;
+         Storage::saveRtcData(rtcData);
+      }
    }
+
    if (isOnCharge && wifiAP != NULL) {
       Api* api = wifiAP->getApi();
       if (api != NULL) {
@@ -111,8 +137,8 @@ void HandMonitor::checkLevel(boolean isOnCharge) {
 
 }
 
-void HandMonitor::deepSleep() {
-   int sleepTime = config->getRefreshInterval();
+void HandMonitor::deepSleep(rtcStoredData* rtcData) {
+   uint8_t sleepTime = rtcData->period;
    DebugPrintf("Sleep for %ds\n", sleepTime);
    WiFi.mode(WIFI_OFF);
    WiFi.forceSleepBegin(0);
@@ -121,6 +147,7 @@ void HandMonitor::deepSleep() {
 
 void HandMonitor::loop() {
    isOnCharge = digitalRead(PIN_POWER_DETECT);
+   rtcStoredData *rtcData = Storage::getRtcData();
    // when module is no longer being charged, close the wifi access point
    if (wasOnCharge && !isOnCharge) {
       wasOnCharge = false;
@@ -131,7 +158,7 @@ void HandMonitor::loop() {
       delete(wifiSTA);  
       wifiSTA = NULL;  
       Utils::checkHeap("onCharge off");
-      deepSleep();
+      deepSleep(rtcData);
    }
    if (isOnCharge && wasOnCharge) {
       wifiAP->refresh();
@@ -141,7 +168,7 @@ void HandMonitor::loop() {
    time_t timeNow = millis();
    // Keep monitoriing level pin
    if ((timeNow - lastTimeLevelCheck > LEVEL_CHECK_PERIOD_WHEN_ON_CHARGE)) {
-      checkLevel(isOnCharge);  // loop is only when on charge => true to not record level changes
+      checkLevel(isOnCharge, rtcData);  // loop is only when on charge => true to not record level changes
       lastTimeLevelCheck = timeNow; 
    }
 

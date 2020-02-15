@@ -11,11 +11,13 @@ The device has two modes: "recording" and "charging".
 
 In "recording mode" which is as long as the battery lasts, and not plugged into an usb charger, the Esp8266 wakes up at a period that can be set and saved in permanent memory, checks the presence sensor, and compares its state to the previous time it was checked.
 
-If there is a difference, it records the date and time in a file, in the Esp flash memory, saves the new state, and goes back to deep sleep until it automatically wakes up again. This allows to save battery life (from 1 to 3 weeks depending on model).
+If there is a difference, and for the third time in a row, it records the date and time in a file, in the Esp flash memory, saves the new state, and goes back to deep sleep until it automatically wakes up again. This allows to save battery life (from 1 to 3 weeks depending on model).
+
+The "third time in a row" condition insures to not record transient changes that may be due to handling the device wall strapping it on, or whatever.
 
 If there is no difference, it just goes back to deep sleep. 
 
-In "charging mode", which is when an usb charger is plugged in, it keeps doing the check but every second, won't record any changes, and won't sleep.
+In "charging mode", which is when an usb charger is plugged in, it keeps doing the check but every 2 seconds, won't record any changes, and won't sleep.
 
 Instead it opens up a wifi access points. When the device has not been set up (or as been reset to factory defaults), the wifi network SSID is "HandMonitor", and password is the same. The blue led blinks every 3 seconds to indicate the wifi is activated.
 

@@ -1,5 +1,6 @@
 
 #include "config.h"
+#include "Storage.h"
 #include <TimeLib.h>
 #include <NtpClientLib.h>
 
@@ -20,7 +21,12 @@ HandMonitorConfig::HandMonitorConfig(const char* name, unsigned int dataSize):XE
 */
 void HandMonitorConfig::initFromDefault() {
   XEEPROMConfigClass::initFromDefault(); // handles version and name init
-  
+  rtcStoredData *rtcData = Storage::getRtcData();
+  rtcData->counter = 0;
+  rtcData->threshold = 200;
+  rtcData->period = 10;
+  Storage::saveRtcData(rtcData);
+
   setName(defaultModuleName); // Reset module name to default name
   setAPSsid(DEFAULT_AP_SSID);
   setAPPwd(DEFAULT_AP_PWD);
@@ -88,20 +94,20 @@ bool HandMonitorConfig::isHomeWifiConfigured() {
 
 }
 
-void HandMonitorConfig::setSensorThreshold(int value) {
+void HandMonitorConfig::setSensorThreshold(uint16_t value) {
   Serial.printf("SETTING THRESHOLD %d\n", value);
   _getDataPtr()->sensorThreshold = value;    
 }
 
-int HandMonitorConfig::getSensorThreshold(void) {
+uint16_t HandMonitorConfig::getSensorThreshold(void) {
   return _getDataPtr()->sensorThreshold;
 }
 
-void HandMonitorConfig::setRefreshInterval(int value) {
+void HandMonitorConfig::setRefreshInterval(uint16_t value) {
   _getDataPtr()->refreshInterval = value;  
 }
 
-int HandMonitorConfig::getRefreshInterval(void) {
+uint16_t HandMonitorConfig::getRefreshInterval(void) {
   return _getDataPtr()->refreshInterval;
 }
 
