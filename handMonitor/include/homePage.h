@@ -28,6 +28,7 @@ char homePage[] = "\
 <div><span class='label'>" MSG_CURRENT_TIME ": </span><span class='value " JSON_TAG_DATE "'/></div>\
 <div><span class='label'>" MSG_HOME_WIFI ": </span><span class='value " JSON_TAG_SSID "'>" MSG_UNDEFINED "</span><span class='label'>, IP: </span><span class='value " JSON_TAG_SSID_IP "'>" MSG_UNDEFINED "</span></div>\
 <div><span class='label'>" MSG_AP_WIFI ": </span><span class='value " JSON_TAG_APSSID "'></span><span class='label'>, IP: </span><span class='value " JSON_TAG_APSSID_IP "'></span></div>\
+<div><span class='label'>" MSG_WORN ": </span><span class='value " JSON_TAG_WORN "'></span></div>\
 <div><span class='label'>" MSG_LEVEL ": </span><span class='value " JSON_TAG_LEVEL "'></span></div>\
 <hr/>\
 <form action='/listFiles' method='get'>\

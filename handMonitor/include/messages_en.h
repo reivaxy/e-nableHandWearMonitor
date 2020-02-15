@@ -41,7 +41,16 @@
 #define MSG_AP_WIFI "Access Point"
 #define MSG_UNDEFINED "Not set"
 #define MSG_MEMORY "Memory"
+#define MSG_WORN "Device is worn"
+
+#define MSG_RESET_ALL "Reset config & files"
+#define MSG_RESET_CONFIG "Reset config only"
+#define MSG_ERASE_FILES "Erase all files"
+#define MSG_CREATE_FAKE_DATA "Create test data"
 
 #define MSG_MEMORY_SIZE "Total space"
 #define MSG_MEMORY_USED "Used space"
 #define MSG_MEMORY_MAX_FILES "Max open files"
+
+#define MSG_YES "yes"
+#define MSG_NO "no"

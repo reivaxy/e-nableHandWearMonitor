@@ -69,6 +69,7 @@ void Api::init() {
       root[JSON_TAG_APSSID] = config->getAPSsid();
       root[JSON_TAG_APSSID_IP] = WiFi.softAPIP().toString();
       root[JSON_TAG_LEVEL] = level;
+      root[JSON_TAG_WORN] = (level < config->getSensorThreshold())? MSG_YES : MSG_NO ;
 
       if (src.equals("init") || src.equals("admin")) {
          root[JSON_TAG_THRESHOLD] = config->getSensorThreshold();

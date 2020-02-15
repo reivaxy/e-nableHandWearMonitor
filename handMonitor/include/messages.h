@@ -13,7 +13,7 @@
 
 // This file only defines which message file should be used
 
-// #define __HM__FR
+#define __HM__FR
 
 #ifdef __HM__FR
    #include "messages_fr.h"

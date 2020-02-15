@@ -48,19 +48,19 @@ char adminPage[] = "\
 <div><span class='label'>" MSG_MEMORY_MAX_FILES ": </span><span class='value " JSON_TAG_MEMORY_MAX_FILES "'></span></div>\
 <hr/>\
 <form action='/reset' method='post'>\
-  <input type='submit' value='Reset config & files'/>\
+  <input type='submit' value='" MSG_RESET_ALL "'/>\
 </form>\
 <form action='/resetConfig' method='post'>\
-  <input type='submit' value='Reset config only'/>\
+  <input type='submit' value='" MSG_RESET_CONFIG "'/>\
 </form>\
 <form action='/erase' method='post'>\
-  <input type='submit' value='Erase all files'/>\
+  <input type='submit' value='" MSG_ERASE_FILES "'/>\
 </form>\
 <form action='/createFakeData' method='post'>\
-  <input type='submit' value='Create fake data'/>\
+  <input type='submit' value='" MSG_CREATE_FAKE_DATA "'/>\
 </form>\
 <form action='/ota' method='post'>\
-  <input type='submit' value='Update Firmware'/>\
+  <input type='submit' value='" MSG_START_OTA "'/>\
 </form>\
 " DATA_SCRIPT "\
 </body>\

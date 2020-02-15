@@ -34,14 +34,23 @@
 #define MSG_INIT_TIME_OFFSET "Decalage horaire (mn)"
 #define MSG_INIT_NAME "Nom"
 
-#define MSG_LEVEL "Niveau courant"
+#define MSG_LEVEL "Niveau mesuré"
 #define MSG_THRESHOLD "Seuil niveau"
 #define MSG_INIT_PAGE "Configuration"
 #define MSG_HOME_WIFI "Wifi Box"
 #define MSG_AP_WIFI "Point d'Accès"
 #define MSG_UNDEFINED "Non configuré"
 #define MSG_MEMORY "Mémoire"
+#define MSG_WORN "Appareil porté"
+
+#define MSG_RESET_ALL "Reset configuration et fichiers"
+#define MSG_RESET_CONFIG "Reset configuration seulement"
+#define MSG_ERASE_FILES "Effacer les fichiers"
+#define MSG_CREATE_FAKE_DATA "Créer données de test"
 
 #define MSG_MEMORY_SIZE "Espace total"
 #define MSG_MEMORY_USED "Espace utilisé"
 #define MSG_MEMORY_MAX_FILES "Fichiers ouverts max"
+
+#define MSG_YES "oui"
+#define MSG_NO "non"
