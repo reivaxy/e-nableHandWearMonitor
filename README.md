@@ -63,11 +63,11 @@ After the upload is done (and verified) the esp will reboot, updated, and reopen
 
 The "File list" button will display a page listing all the files in the esp memory. One new file is created each month.
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileList.png" width="300px">
+<kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileList.png" width="300px"></kbd>
 
 Then, clicking on a file, you can display its content, or download it with a long press / download file.
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileContent.png" width="200px">
+<kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileContent.png" width="200px"></kbd>
 
 This file was made with a 10 seconds wake up period, and with a state change each time, to make a biiig file. I had no issue recording 15695 lines, in a 223K file. 
 
@@ -82,7 +82,7 @@ On this page you can update the wake up period as well as the sensor level thres
 
 There is also some information on the SPIFFS memory usage, and more will be added if needed.
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/adminPage.jpg" width="300px">
+<kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/adminPage.jpg" width="300px"></kbd>
 
 
 ## The 1000 mAh version
@@ -95,25 +95,25 @@ It is not using the definitive PCB, some wires will be removed, some layout impr
 Here are pictures of this device in its 3D printed case with a slide-in lid:
 
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/deviceOpen.jpg" width="300px">
+<kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/deviceOpen.jpg" width="300px"></kbd>
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/device.jpg" width="300px">
+<kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/device.jpg" width="300px"></kbd>
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/backSide.jpg" width="300px">
+<kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/backSide.jpg" width="300px"></kbd>
 
 
 Solderless connections available on the PCB allow to monitor the serial port for debug messages, as well as flash a new release of the firmware in case OTA feature is broken.
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/monitoring.jpg" width="300px">
+<kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/monitoring.jpg" width="300px"></kbd>
 
 Using a custom tool that clips in the lid rails:
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/monitoringTool.jpg" width="300px">
+<kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/monitoringTool.jpg" width="300px"></kbd>
 
 
 The PCB is very thin to minimize weight and volume. This prototype PCB has a faulty IR sensor package layout and incorrect battery connection to charger, fixed for next version.
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/pcb.jpg" width="300px">
+<kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/pcb.jpg" width="300px"></kbd>
 
 
  ## The 300 mAh version
@@ -122,7 +122,7 @@ The PCB is very thin to minimize weight and volume. This prototype PCB has a fau
 
  This is the first prototype.
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/300mAhDevice.jpg" width="300px">
+<kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/300mAhDevice.jpg" width="300px"></kbd>
 
 Since its shape is a bit long, it may not fit well due to the position of the second scratch tape, which is why another model is currently being crafter, that will be more squarish. Pictures will be added when available.
 
