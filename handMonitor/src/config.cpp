@@ -30,6 +30,7 @@ void HandMonitorConfig::initFromDefault() {
   setSensorThreshold(200);
   setRefreshInterval(10);
   setTimeOffset(60); // +1 hour offset: france winter time.
+  setInitDone(false);
 }
 
 
@@ -110,4 +111,11 @@ void HandMonitorConfig::setTimeOffset(int value) {
 
 int HandMonitorConfig::getTimeOffset(void) {
   return _getDataPtr()->timeOffset;
+}
+
+void HandMonitorConfig::setInitDone(bool value) {
+  _getDataPtr()->initDone = value;    
+}
+bool HandMonitorConfig::getInitDone(void) {
+  return _getDataPtr()->initDone;
 }

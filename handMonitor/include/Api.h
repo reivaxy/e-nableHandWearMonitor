@@ -31,6 +31,7 @@ public:
    void refresh();
    void printAdminPage();
    void printHomePage();
+   void printInitPage();
    void securityDelayWarning(const char* msg);
    void initSave();
    void startOTA();
@@ -39,6 +40,7 @@ public:
    void sendHtml(const char* html, int code);
    void sendHtml(const char* title, const char* message, int code);
    void sendText(const char* html, int code);
+   void sendPage(const char* page);
    void sendJs(const char* message, int code);
    void setLevel(int level);
 };

@@ -1,1 +1,3 @@
 resources/originals
+*.gcode
+*.3mf

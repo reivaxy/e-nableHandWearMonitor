@@ -32,3 +32,16 @@
 #define MSG_INIT_SENSOR_THRESHOLD "Seuil de détection"
 #define MSG_INIT_REFRESH_INTERVAL "Intervale de réveil"
 #define MSG_INIT_TIME_OFFSET "Decalage horaire (mn)"
+#define MSG_INIT_NAME "Nom"
+
+#define MSG_LEVEL "Niveau courant"
+#define MSG_THRESHOLD "Seuil niveau"
+#define MSG_INIT_PAGE "Configuration"
+#define MSG_HOME_WIFI "Wifi Box"
+#define MSG_AP_WIFI "Point d'Accès"
+#define MSG_UNDEFINED "Non configuré"
+#define MSG_MEMORY "Mémoire"
+
+#define MSG_MEMORY_SIZE "Espace total"
+#define MSG_MEMORY_USED "Espace utilisé"
+#define MSG_MEMORY_MAX_FILES "Fichiers ouverts max"

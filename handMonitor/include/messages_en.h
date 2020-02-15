@@ -32,3 +32,16 @@
 #define MSG_INIT_SENSOR_THRESHOLD "Sensor threshold"
 #define MSG_INIT_REFRESH_INTERVAL "Refresh interval"
 #define MSG_INIT_TIME_OFFSET "Time offset (mn)"
+#define MSG_INIT_NAME "Name"
+
+#define MSG_LEVEL "Current level"
+#define MSG_THRESHOLD "Threshold level"
+#define MSG_INIT_PAGE "Settings"
+#define MSG_HOME_WIFI "Home Wifi"
+#define MSG_AP_WIFI "Access Point"
+#define MSG_UNDEFINED "Not set"
+#define MSG_MEMORY "Memory"
+
+#define MSG_MEMORY_SIZE "Total space"
+#define MSG_MEMORY_USED "Used space"
+#define MSG_MEMORY_MAX_FILES "Max open files"

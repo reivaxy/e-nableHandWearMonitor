@@ -13,8 +13,11 @@
 #include "Storage.h"
 #include "WifiSTA.h"
 #include "RTClock.h"
+#include "homePage.h"
 #include "initPage.h"
 #include "adminPage.h"
+#include <ArduinoJson.h>
+#include "jsonTags.h"
 
 Api::Api(HandMonitorConfig *_config) {
    config = _config;
@@ -26,62 +29,93 @@ void Api::init() {
    // Display config page
    server->on("/", HTTP_GET, [&]() {
       DebugPrintln("GET /");
-      printHomePage();
+      if (config->getInitDone()) {
+         printHomePage();
+      } else {
+         printInitPage();
+      }
    });
+
+
    // Display "admin" " page
    server->on("/admin", HTTP_GET, [&]() {
       DebugPrintln("GET /admin");
       printAdminPage();
    });
 
-   // some dynamic data for home page
-   server->on("/info", HTTP_GET, [&]() {
-      DebugPrintln("GET /info");
-      RTClock *clock = new RTClock();
-      clock->setup();
+   // some json data 
+   server->on("/data", HTTP_GET, [&]() {
+      DebugPrintln("GET /data");
+      char data[500];
+      String src = server->arg("src"); 
+      strcpy(data, "var jsonData=");
+      StaticJsonBuffer<JSON_OBJECT_SIZE(15) + 100> jsonBuffer;    
+      // Create the root object
+      JsonObject& root = jsonBuffer.createObject();
+      root[JSON_TAG_NAME] = config->getName();
       char dateTime[50];
+      RTClock *clock = new RTClock();
+      clock->setup();      
       int error = clock->getTime(dateTime);
       if(error != 0) {
          strcpy(dateTime, "Not initialized");
       }
-      char messageIPSTA[100];
-      *messageIPSTA = 0;
+      root[JSON_TAG_DATE] = dateTime;
+      // Is it configured to connect to home wifi ?
       if (config->getSsid() != 0) {
-         sprintf(messageIPSTA, "IP %s: %s", config->getSsid(), WiFi.localIP().toString().c_str());
+         root[JSON_TAG_SSID] = config->getSsid();
+         root[JSON_TAG_SSID_IP] = WiFi.localIP().toString();
       }
-      char message[200];
-      sprintf(message, "document.write(\"Date: %s\\nIP %s: %s\\n%s\\nLevel: %d\\n\");", dateTime, config->getAPSsid(), 
-                                                      WiFi.softAPIP().toString().c_str(), messageIPSTA, level);
-      sendJs(message, 200);
+      root[JSON_TAG_APSSID] = config->getAPSsid();
+      root[JSON_TAG_APSSID_IP] = WiFi.softAPIP().toString();
+      root[JSON_TAG_LEVEL] = level;
+
+      if (src.equals("init") || src.equals("admin")) {
+         root[JSON_TAG_THRESHOLD] = config->getSensorThreshold();
+         root[JSON_TAG_REFRESH] = config->getRefreshInterval();
+      }
+      
+      if (src.equals("admin")) {
+         if (SPIFFS.begin()) {
+            FSInfo fs_info;
+            SPIFFS.info(fs_info);         
+            root[JSON_TAG_MEMORY_SIZE] = fs_info.totalBytes;
+            root[JSON_TAG_MEMORY_USED] =  fs_info.usedBytes;
+            root[JSON_TAG_MEMORY_MAX_FILES] = fs_info.maxOpenFiles;
+         }
+      }
+
+      root.printTo(data+strlen(data), 500);
+      strcat(data, ";");
+      sendJs(data, 200);
    });
 
-   // some dynamic data for admin page
-   server->on("/adminInfo", HTTP_GET, [&]() {
-      DebugPrintln("GET /adminInfo");
-      char spiffs[200];
-
-      if (SPIFFS.begin()) {
-         FSInfo fs_info;
-         SPIFFS.info(fs_info);
-         sprintf(spiffs, "document.write(\"totalBytes: %d\\nusedBytes: %d\\nblockSize: %d\\npageSize: %d\\nmaxOpenFiles: %d\\nmaxPathLength: %d\\nRefresh interval: %ds\\nSensor threshold: %d\");",
-                fs_info.totalBytes, fs_info.usedBytes, fs_info.blockSize, fs_info.pageSize, fs_info.maxOpenFiles, fs_info.maxPathLength,
-                      config->getRefreshInterval(), config->getSensorThreshold());   
-      } else {
-         Serial.println("An Error has occurred while mounting SPIFFS");
-      }
-      sendJs(spiffs, 200);
-   });
+   // Display config page
+   server->on("/init", HTTP_GET, [&]() {
+      DebugPrintln("GET /init");
+      printInitPage();
+   }); 
 
    // Save config parameters
-   server->on("/initSave", HTTP_POST, [&]() {
-      DebugPrintln("POST /initSave");
+   server->on("/init", HTTP_POST, [&]() {
+      DebugPrintln("POST /init");
       initSave();
    });   
+
+   // Reset config only
+   server->on("/resetConfig", HTTP_POST, [&]() {
+      DebugPrintln("POST /resetConfig");
+      securityDelayWarning("Config factory reset");
+      Serial.println("Resetting config ");
+      config->initFromDefault();
+      config->saveToEeprom();
+      ESP.restart();
+   });
 
    // Reset to factory defaults
    server->on("/reset", HTTP_POST, [&]() {
       DebugPrintln("POST /reset");
-      securityDelayWarning("full reset");
+      securityDelayWarning("factory reset");
       Serial.println("Resetting to factory ");
       config->initFromDefault();
       config->saveToEeprom();
@@ -89,10 +123,11 @@ void Api::init() {
       SPIFFS.format();      
       ESP.restart();
    });
+   
     // erase SPIFFS only
    server->on("/erase", HTTP_POST, [&]() {
       DebugPrintln("POST /erase");
-      securityDelayWarning("SPIFFS erase");
+      securityDelayWarning("SPIFFS data erase");
       Serial.println("Erasing SPIFFS ");
       SPIFFS.begin();
       SPIFFS.format();      
@@ -131,7 +166,7 @@ void Api::init() {
 
 void Api::securityDelayWarning(const char *msg) {
    char message[100];
-   sprintf(message, "Reset module before 10 seconds to cancel %s", msg);
+   sprintf(message, "Reset or unplug module before 10 seconds to cancel %s", msg);
    sendHtml(message, 200);
    delay(10000);
 }
@@ -170,11 +205,15 @@ void Api::listFiles() {
 }
 
 void Api::printHomePage() {
-   sendHtml(initPage, 200);
+   sendPage(homePage);
+}
+
+void Api::printInitPage() {
+   sendPage(initPage);
 }
 
 void Api::printAdminPage() {
-   sendHtml(adminPage, 200);
+   sendPage(adminPage);
 }
 
 void Api::close() {
@@ -184,6 +223,13 @@ void Api::close() {
 
 void Api::initSave() {
    boolean restart = false;
+   // Read and save new name
+   String name = server->arg("name");
+   if (name.length() > 0) {
+      // TODO: add more checks
+      config->setName(name.c_str());
+      restart = true;
+   }
    // Read and save new AP SSID
    String apSsid = server->arg("apSsid");
    if (apSsid.length() > 0) {
@@ -233,10 +279,12 @@ void Api::initSave() {
       NTP.getTime();
    }
 
-   config->saveToEeprom();
    sendHtml(MSG_CONFIG_SAVED, 200);
+   delay(500);
    if (restart) {
-       ESP.restart(); 
+      config->setInitDone(true);
+      config->saveToEeprom();
+      ESP.restart(); 
    }  
 }
 
@@ -254,12 +302,18 @@ void Api::sendHtml(const char* message, int code) {
 }
 
 void Api::sendHtml(const char* title, const char* message, int code) {
-   char html[] = "<html><head><title>%s</title><meta name='viewport' content='width=device-width, initial-scale=1'><meta charset='utf-8'></head><body>%s</body></html>";
+   char html[] = "<html><head><title>%s</title><meta name='viewport' content='width=device-width, initial-scale=1'>"\
+   "<meta charset='utf-8'>" CSS "</head><h1><body><a href='/'>" MSG_TITLE "</a></h1>%s</body></html>";
    char *htmlPage = (char *)malloc(strlen(html) + strlen(title) + strlen(message) + 1);  // +1 is actually useless since %s is replaced ;)
    sprintf(htmlPage, html, title, message);
    server->sendHeader("Connection", "close");
    server->send(code, "text/html", htmlPage);
    free(htmlPage);
+}
+
+void Api::sendPage(const char* page) {
+   server->sendHeader("Connection", "close");
+   server->send(200, "text/html", page);
 }
 
 void Api::sendJs(const char* message, int code) {

@@ -23,7 +23,8 @@ HandMonitor::HandMonitor() {
 // when there is nothing to do
 void HandMonitor::init() {
    Serial.begin(19200);  // Not too fast to not get too much garbage on wake up
-   // Read config
+   // Read config for wake up delay and sensor threashold
+   // todo ? copy this config info into esp "rtc memory" so that no need to read config, might save power ?
    if (config == NULL) {
       config = new HandMonitorConfig("Hand Monitor");
       config->init();   

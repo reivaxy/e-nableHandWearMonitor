@@ -4,54 +4,40 @@
  *  Author  : Xavier Grosjean & Thomas Broussard
  * 
  *  ---------------------------------------------------------------------------------------------------------------------------------------------
- *  Description : initialization web page
+ *  Description : home web page
  * 
  * =============================================================================================================================================
  */
 #pragma once
 
 #include "messages.h"
+#include "dataScript.h"
 #include "jsonTags.h"
 #include "css.h"
 
-char initPage[] = "\
+char homePage[] = "\
 <html>\
 <head><meta charset='utf-8'>\
 <meta name='viewport' content='width=device-width, initial-scale=1'>\
-<script src='/data?src=init'></script>\
+<script src='/data?src=home'></script>\
 " CSS "\
 </head>\
 <body>\
-<h1><a href='/'>" MSG_TITLE "</a></h1>\
+<h1>" MSG_TITLE "</h1>\
 <h2 class='value " JSON_TAG_NAME "'></h2>\
-<div><span class='label'>" MSG_BUILD_DATE ": </span><span class='value'>" __DATE__ " " __TIME__ "</span></div>\
 <div><span class='label'>" MSG_CURRENT_TIME ": </span><span class='value " JSON_TAG_DATE "'/></div>\
 <div><span class='label'>" MSG_HOME_WIFI ": </span><span class='value " JSON_TAG_SSID "'>" MSG_UNDEFINED "</span><span class='label'>, IP: </span><span class='value " JSON_TAG_SSID_IP "'>" MSG_UNDEFINED "</span></div>\
 <div><span class='label'>" MSG_AP_WIFI ": </span><span class='value " JSON_TAG_APSSID "'></span><span class='label'>, IP: </span><span class='value " JSON_TAG_APSSID_IP "'></span></div>\
 <div><span class='label'>" MSG_LEVEL ": </span><span class='value " JSON_TAG_LEVEL "'></span></div>\
-<div><span class='label'>" MSG_THRESHOLD ": </span><span class='value " JSON_TAG_THRESHOLD "'></span></div>\
-<div><span class='label'>" MSG_INIT_REFRESH_INTERVAL ": </span><span class='value " JSON_TAG_REFRESH "'></span></div>\
 <hr/>\
-<h2>" MSG_DATA "</h2>\
 <form action='/listFiles' method='get'>\
   <input type='submit' value='" MSG_FILE_LIST "'/>\
 </form>\
 <hr/>\
-<h2>" MSG_CONFIG "</h2>\
-<form action='/init' method='post'>\
-  <input name='name' type='text' placeholder='" MSG_INIT_NAME "' style='width: 150px;'/><br/>\
-  <input name='apSsid' type='text' placeholder='" MSG_INIT_AP_SSID "'/><br/>\
-  <input name='apPwd' type='password' placeholder='" MSG_INIT_AP_PWD "'/><br/>\
-  <input name='homeSsid' type='text' placeholder='" MSG_INIT_HOME_SSID "'/><br/>\
-  <input name='homePwd' type='password' placeholder='" MSG_INIT_HOME_PWD "'/><br/>\
-  <input name='timeOffset' type='text' placeholder='" MSG_INIT_TIME_OFFSET "'/><br/>\
-  <input type='submit'/>\
+<form action='/init' method='get'>\
+  <input type='submit' value='" MSG_INIT_PAGE "'/>\
 </form>\
 <hr/>\
-<h2>" MSG_SYSTEM "</h2>\
-<form action='/ota' method='post'>\
-  <input type='submit' value='" MSG_START_OTA "'/>\
-</form>\
 " DATA_SCRIPT "\
 </body>\
 </html>\

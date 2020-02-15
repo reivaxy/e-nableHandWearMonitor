@@ -40,11 +40,13 @@ struct HandMonitorConfigStruct:public XEEPROMConfigDataStruct {
   char ssid[SSID_MAX_LENGTH + 1];    // home box wifi network
   char pwd[PWD_MAX_LENGTH + 1];
 
-  char ntpServer[URL_MAX_LENGTH + 1];  // ntp server differs on adobe network and public network
+  char ntpServer[URL_MAX_LENGTH + 1];
 
   int sensorThreshold;  // 0-1024. Typically, around 200 (depending on resistor values on board)
   int refreshInterval;  // in seconds
   int timeOffset;  // in minutes
+
+  bool initDone; // false on new module/new config version. True at first config save.
 
 };
 
@@ -80,6 +82,9 @@ public:
 
   void setTimeOffset(int value);
   int getTimeOffset(void);
+
+  void setInitDone(bool value);
+  bool getInitDone(void);
 
 
   bool isHomeWifiConfigured(void);
