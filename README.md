@@ -13,13 +13,13 @@ In "recording mode" which is as long as the battery lasts, and not plugged into 
 
 If there is a difference, and for the third time in a row, it records the date and time in a file, in the Esp flash memory, saves the new state, and goes back to deep sleep until it automatically wakes up again. This allows to save battery life (from 1 to 3 weeks depending on model).
 
-The "third time in a row" condition insures to not record transient changes that may be due to handling the device wall strapping it on, or whatever.
+The "third time in a row" condition insures to not record transient changes that may be due to handling the device while strapping it on, or whatever.
 
 If there is no difference, it just goes back to deep sleep. 
 
 In "charging mode", which is when an usb charger is plugged in, it keeps doing the check but every 2 seconds, won't record any changes, and won't sleep.
 
-Instead it opens up a wifi access points. When the device has not been set up (or as been reset to factory defaults), the wifi network SSID is "HandMonitor", and password is the same. The blue led blinks every 3 seconds to indicate the wifi is activated.
+Instead it opens up a wifi access points, and  the blue led blinks every 3 seconds to indicate the wifi is activated. When the device has not been set up (or as been reset to factory defaults), the default wifi network SSID is "HandMonitor", and password is the same. The password should be modified while setting up the device.
 
 By connecting your phone to this network, one can access the module pages at http://192.168.4.1.
 
@@ -40,7 +40,7 @@ You should provide a name for the device, for instance its owner first name.
 
 You can change the default ssid/pwd for the access point wifi network, and, optionally, provide your home wifi ssid and pwd. These are stored locally in the device memory, and never sent anywhere.
 
-Providing your home wifi connection information will allow to automatically setup the date and time in the device, and will allow you to upload the data files listing the times the E-nable hand was worn to a dedicated server (work in progress).
+Providing your home wifi connection information will allow to automatically setup the date and time in the device, and will allow you to upload the data files listing each period the E-nable hand was worn to a dedicated server (work in progress).
 
 If you don't provide your home wifi connection information you will be able to setup the time manually (work in progress), and download the data files to your computer or phone.
 
@@ -78,7 +78,7 @@ Each entry is composed of the day, then the hour, minute, second, then the state
 
 ## "Admin" page
 
-It's actually a page where some more configuration data as well as "dangerous" features are available: reset the full device (configuration and data files), erase all data files, create test data files...
+It's a page where some more configuration data as well as "dangerous" features are available: reset the full device (configuration and data files), erase all data files, create test data files...
 
 On this page you can update the wake up period as well as the sensor level threshold that is used to decide if the device is being worn (by detecting skin proximity) or not.
 
@@ -89,7 +89,7 @@ There is also some information on the SPIFFS memory usage, and more will be adde
 
 ## The 1000 mAh version
 
-The prototype was built using a 1000mAh battery, which provides an autonomy of several days (still need to check how many exactly).
+The prototype shown was built using a 1000mAh battery, which provides an autonomy of more than two weeks.
 
 It is not using the definitive PCB, some wires will be removed, some layout improved to ease assembly.
 
@@ -120,7 +120,7 @@ The PCB is very thin to minimize weight and volume. This prototype PCB has a fau
 
  ## The 300 mAh version
 
- The model above is a bit to big and too havy for young kids, so I built another one, much smaller, using a 300mAh battery, which still gives it a little over one week of autonomy.
+ The model above is a bit too big and too heavy for young kids, so I built another one, much smaller, using a 300mAh battery, which still gives it a little over one week of autonomy.
 
  This is the first prototype.
 
@@ -128,4 +128,4 @@ The PCB is very thin to minimize weight and volume. This prototype PCB has a fau
 
 Since its shape is a bit long, it may not fit well due to the position of the second scratch tape, which is why another model is currently being crafter, that will be more squarish. Pictures will be added when available.
 
-All PCB's are (or will be made) in the repository.
+All PCB's are (or will be made) available in the repository, as well as 3D designs to 3D-print the cases.
