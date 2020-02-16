@@ -13,7 +13,7 @@ The 300mAh version is available in 2 layouts:
 - V3: squarrish case  NOT READY FOR REAL PCB YET, just a POC
 
 
-<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/layouts.png" width="300px">
+<img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/layouts.jpg" width="300px">
 
 
 The 3 small holes above the mode and charging LEDs are intended to be filled with a small bit of plastic optical fiber.
