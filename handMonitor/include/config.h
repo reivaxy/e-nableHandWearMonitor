@@ -56,6 +56,7 @@ public:
   HandMonitorConfig(const char* moduleName, unsigned int dataSize);
   virtual void initFromDefault();
 
+  void init() override;
   void setName(const char*);
   const char* getName(void);
 

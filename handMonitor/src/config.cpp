@@ -39,6 +39,14 @@ void HandMonitorConfig::initFromDefault() {
   setInitDone(false);
 }
 
+void HandMonitorConfig::init() {
+  XEEPROMConfigClass::init();
+  rtcStoredData *rtcData = Storage::getRtcData();
+  rtcData->counter = 0;
+  rtcData->threshold = getSensorThreshold();
+  rtcData->period = getRefreshInterval();
+  Storage::saveRtcData(rtcData);  
+}
 
 void HandMonitorConfig::setName(const char* name) {
   strlcpy(_getDataPtr()->moduleName, name, NAME_MAX_LENGTH + 1);
