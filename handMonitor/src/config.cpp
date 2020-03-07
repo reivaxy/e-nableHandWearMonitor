@@ -1,6 +1,7 @@
 
 #include "config.h"
 #include "Storage.h"
+#include "EspRtcMem.h"
 #include <TimeLib.h>
 #include <NtpClientLib.h>
 
@@ -21,11 +22,11 @@ HandMonitorConfig::HandMonitorConfig(const char* name, unsigned int dataSize):XE
 */
 void HandMonitorConfig::initFromDefault() {
   XEEPROMConfigClass::initFromDefault(); // handles version and name init
-  rtcStoredData *rtcData = Storage::getRtcData();
+  rtcStoredData *rtcData = EspRtcMem::getRtcData();
   rtcData->counter = 0;
   rtcData->threshold = 200;
   rtcData->period = 10;
-  Storage::saveRtcData(rtcData);
+  EspRtcMem::saveRtcData(rtcData);
 
   setName(defaultModuleName); // Reset module name to default name
   setAPSsid(DEFAULT_AP_SSID);
@@ -41,11 +42,11 @@ void HandMonitorConfig::initFromDefault() {
 
 void HandMonitorConfig::init() {
   XEEPROMConfigClass::init();
-  rtcStoredData *rtcData = Storage::getRtcData();
+  rtcStoredData *rtcData = EspRtcMem::getRtcData();
   rtcData->counter = 0;
   rtcData->threshold = getSensorThreshold();
   rtcData->period = getRefreshInterval();
-  Storage::saveRtcData(rtcData);  
+  EspRtcMem::saveRtcData(rtcData);  
 }
 
 void HandMonitorConfig::setName(const char* name) {

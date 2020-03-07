@@ -11,6 +11,7 @@
 
 #include "Api.h"
 #include "Storage.h"
+#include "EspRtcMem.h"
 #include "WifiSTA.h"
 #include "RTClock.h"
 #include "homePage.h"
@@ -46,13 +47,15 @@ void Api::init() {
    // some json data 
    server->on("/data", HTTP_GET, [&]() {
       DebugPrintln("GET /data");
-      char data[500];
+      char jsonData[500];
       String src = server->arg("src"); 
-      strcpy(data, "var jsonData=");
+      strcpy(jsonData, "var jsonData=");
       StaticJsonBuffer<JSON_OBJECT_SIZE(15) + 100> jsonBuffer;    
       // Create the root object
       JsonObject& root = jsonBuffer.createObject();
-      root[JSON_TAG_NAME] = config->getName();
+      JsonObject& data = jsonBuffer.createObject();
+      root[JSON_TAG_DATA] = data;
+      data[JSON_TAG_NAME] = config->getName();
       char dateTime[50];
       RTClock *clock = new RTClock();
       clock->setup();      
@@ -60,35 +63,40 @@ void Api::init() {
       if(error != 0) {
          strcpy(dateTime, "Not initialized");
       }
-      root[JSON_TAG_DATE] = dateTime;
+      data[JSON_TAG_DATE] = dateTime;
       // Is it configured to connect to home wifi ?
       if (config->getSsid() != 0) {
-         root[JSON_TAG_SSID] = config->getSsid();
-         root[JSON_TAG_SSID_IP] = WiFi.localIP().toString();
+         data[JSON_TAG_SSID] = config->getSsid();
+         data[JSON_TAG_SSID_IP] = WiFi.localIP().toString();
+         root[JSON_TAG_CSS_CLASS] = "hideManualTime"; // hide manual time setting
+      } else {
+         root[JSON_TAG_CSS_CLASS] = "hideTimeOffset"; // hide time offset setting
       }
-      root[JSON_TAG_APSSID] = config->getAPSsid();
-      root[JSON_TAG_APSSID_IP] = WiFi.softAPIP().toString();
-      root[JSON_TAG_LEVEL] = level;
-      root[JSON_TAG_WORN] = (level < config->getSensorThreshold())? MSG_YES : MSG_NO ;
+      data[JSON_TAG_APSSID] = config->getAPSsid();
+      data[JSON_TAG_APSSID_IP] = WiFi.softAPIP().toString();
+      data[JSON_TAG_LEVEL] = level;
+      data[JSON_TAG_WORN] = (level < config->getSensorThreshold())? MSG_YES : MSG_NO ;
+
+
 
       if (src.equals("init") || src.equals("admin")) {
-         root[JSON_TAG_THRESHOLD] = config->getSensorThreshold();
-         root[JSON_TAG_REFRESH] = config->getRefreshInterval();
+         data[JSON_TAG_THRESHOLD] = config->getSensorThreshold();
+         data[JSON_TAG_REFRESH] = config->getRefreshInterval();
       }
       
       if (src.equals("admin")) {
          if (SPIFFS.begin()) {
             FSInfo fs_info;
             SPIFFS.info(fs_info);         
-            root[JSON_TAG_MEMORY_SIZE] = fs_info.totalBytes;
-            root[JSON_TAG_MEMORY_USED] =  fs_info.usedBytes;
-            root[JSON_TAG_MEMORY_MAX_FILES] = fs_info.maxOpenFiles;
+            data[JSON_TAG_MEMORY_SIZE] = fs_info.totalBytes;
+            data[JSON_TAG_MEMORY_USED] =  fs_info.usedBytes;
+            data[JSON_TAG_MEMORY_MAX_FILES] = fs_info.maxOpenFiles;
          }
       }
 
-      root.printTo(data+strlen(data), 500);
-      strcat(data, ";");
-      sendJs(data, 200);
+      root.printTo(jsonData+strlen(jsonData), 500);
+      strcat(jsonData, ";");
+      sendJs(jsonData, 200);
    });
 
    // Display config page
@@ -223,7 +231,7 @@ void Api::close() {
 }
 
 void Api::initSave() {
-   rtcStoredData *rtcData = Storage::getRtcData();
+   rtcStoredData *rtcData = EspRtcMem::getRtcData();
    boolean restart = false;
    boolean saveRtcData = false;
    // Read and save new name
@@ -288,7 +296,7 @@ void Api::initSave() {
 
    sendHtml(MSG_CONFIG_SAVED, 200);
    if (saveRtcData) {
-      Storage::saveRtcData(rtcData);
+      EspRtcMem::saveRtcData(rtcData);
    }
    delay(500);
    if (restart) {

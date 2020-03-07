@@ -47,6 +47,11 @@ struct HandMonitorConfigStruct:public XEEPROMConfigDataStruct {
   int timeOffset;  // in minutes
 
   bool initDone; // false on new module/new config version. True at first config save.
+  uint8_t hourStartPause;
+  uint8_t minStartPause;
+  uint8_t hourEndPause;
+  uint8_t minEndPause;
+  uint8_t pausePeriod;
 
 };
 

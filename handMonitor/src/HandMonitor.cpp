@@ -11,6 +11,7 @@
 
 #include "HandMonitor.h"
 #include "Storage.h"
+#include "EspRtcMem.h"
 #include "Led.h"
 
 #define FPM_SLEEP_MAX_TIME 0xFFFFFFF
@@ -24,7 +25,7 @@ HandMonitor::HandMonitor() {
 void HandMonitor::init() {
    Serial.begin(19200);  // Not too fast to not get too much garbage on wake up
    // Read ESP rct memory for threshold, wake up period and previous state
-   rtcStoredData *rtcData = Storage::getRtcData();
+   rtcStoredData *rtcData = EspRtcMem::getRtcData();
 
    pinMode(PIN_POWER_DETECT, INPUT);
    pinMode(PIN_IR_EMITTER, OUTPUT);
@@ -118,13 +119,13 @@ void HandMonitor::checkLevel(boolean isOnCharge, rtcStoredData* rtcData) {
          counter ++;
       }
       rtcData->counter = counter;
-      Storage::saveRtcData(rtcData);
+      EspRtcMem::saveRtcData(rtcData);
    } else {
       // Current level is same as previous level
       // If counter was not 0, reset it to 0
       if (counter != 0) {
          rtcData->counter = 0;
-         Storage::saveRtcData(rtcData);
+         EspRtcMem::saveRtcData(rtcData);
       }
    }
 
@@ -134,7 +135,6 @@ void HandMonitor::checkLevel(boolean isOnCharge, rtcStoredData* rtcData) {
          api->setLevel(level);
       }
    }
-
 }
 
 void HandMonitor::deepSleep(rtcStoredData* rtcData) {
@@ -147,7 +147,7 @@ void HandMonitor::deepSleep(rtcStoredData* rtcData) {
 
 void HandMonitor::loop() {
    isOnCharge = digitalRead(PIN_POWER_DETECT);
-   rtcStoredData *rtcData = Storage::getRtcData();
+   rtcStoredData *rtcData = EspRtcMem::getRtcData();
    // when module is no longer being charged, close the wifi access point
    if (wasOnCharge && !isOnCharge) {
       wasOnCharge = false;

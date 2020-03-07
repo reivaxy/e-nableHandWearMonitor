@@ -19,6 +19,7 @@
 #include "WifiSTA.h"
 #include "Utils.h"
 #include "Storage.h"
+#include "EspRtcMem.h"
 
 
 class HandMonitor {

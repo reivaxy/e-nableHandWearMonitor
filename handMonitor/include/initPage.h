@@ -39,12 +39,22 @@ char initPage[] = "\
 <hr/>\
 <h2>" MSG_CONFIG "</h2>\
 <form action='/init' method='post'>\
-  <input name='name' type='text' placeholder='" MSG_INIT_NAME "' style='width: 150px;'/><br/>\
-  <input name='apSsid' type='text' placeholder='" MSG_INIT_AP_SSID "'/><br/>\
-  <input name='apPwd' type='password' placeholder='" MSG_INIT_AP_PWD "'/><br/>\
-  <input name='homeSsid' type='text' placeholder='" MSG_INIT_HOME_SSID "'/><br/>\
-  <input name='homePwd' type='password' placeholder='" MSG_INIT_HOME_PWD "'/><br/>\
-  <input name='timeOffset' type='text' placeholder='" MSG_INIT_TIME_OFFSET "'/><br/>\
+  <div class='value'><span class='label'>" MSG_INIT_NAME "</span><input class='value' name='name' type='text'/></div>\
+  <div class='value'><span class='label'>" MSG_INIT_AP_SSID "</span><input class='value' name='apSsid' type='text'/></div>\
+  <div class='value'><span class='label'>" MSG_INIT_AP_PWD "</span><input class='value' name='apPwd' type='password'/></div>\
+  <div class='value'><span class='label'>" MSG_INIT_HOME_SSID "</span><input class='value " JSON_TAG_SSID "' name='homeSsid' type='text'/></div>\
+  <div class='value'><span class='label'>" MSG_INIT_HOME_PWD "</span><input class='value' name='homePwd' type='password'/></div>\
+\  
+  <div  class='value' id='timeOffset'><span>" MSG_TIME_OFFSET "</span><br/>\
+  <span class='label'>" MSG_INIT_TIME_OFFSET "</span><input class='value' name='timeOffset' type='text'/></div>\
+\  
+  <div class='value' id='manualTime'><span>" MSG_MANUAL_TIME_SETTING "</span><br/>\
+  <span class='label'>" MSG_CURRENT_TIME "</span><input class='value' name='manualDateTime' type='datetime-local'/></div>\
+\
+  <div class='value'><span class='label'>" MSG_INIT_START_PAUSE "</span><input class='value' name='startPause' type='time'/></div>\
+  <div class='value'><span class='label'>" MSG_INIT_END_PAUSE "</span><input class='value' name='endPause' type='time'/></div>\
+  <div class='value'><span class='label'>" MSG_INIT_PAUSE_REFRESH_INTERVAL "</span><input class='value' name='intervalPause' type='number'/></div>\
+\
   <input type='submit'/>\
 </form>\
 <hr/>\
