@@ -22,11 +22,6 @@ HandMonitorConfig::HandMonitorConfig(const char* name, unsigned int dataSize):XE
 */
 void HandMonitorConfig::initFromDefault() {
   XEEPROMConfigClass::initFromDefault(); // handles version and name init
-  rtcStoredData *rtcData = EspRtcMem::getRtcData();
-  rtcData->counter = 0;
-  rtcData->threshold = 200;
-  rtcData->period = 10;
-  EspRtcMem::saveRtcData(rtcData);
 
   setName(defaultModuleName); // Reset module name to default name
   setAPSsid(DEFAULT_AP_SSID);
@@ -34,18 +29,34 @@ void HandMonitorConfig::initFromDefault() {
   setSsid("");
   setPwd(""); 
   setNtpServer(DEFAULT_NTP_SERVER);
-  setSensorThreshold(200);
-  setRefreshInterval(10);
+  setSensorThreshold(450);
+  setRefreshInterval(5);
   setTimeOffset(60); // +1 hour offset: france winter time.
   setInitDone(false);
+  setStartPause("21:00");
+  setEndPause("07:30");
+  setPausePeriod(1800);
+
+  initRtcMemConfig();
 }
 
 void HandMonitorConfig::init() {
   XEEPROMConfigClass::init();
+  initRtcMemConfig();
+}
+
+void HandMonitorConfig::initRtcMemConfig() {
   rtcStoredData *rtcData = EspRtcMem::getRtcData();
   rtcData->counter = 0;
+  rtcData->previous = 0;
+
   rtcData->threshold = getSensorThreshold();
   rtcData->period = getRefreshInterval();
+  rtcData->hourStartPause = Utils::toInt(getStartPause(), 2);
+  rtcData->minStartPause = Utils::toInt(getStartPause()+3, 2);
+  rtcData->hourEndPause = Utils::toInt(getEndPause(), 2);
+  rtcData->minEndPause = Utils::toInt(getEndPause()+3, 2);
+  rtcData->pausePeriod = getPausePeriod();
   EspRtcMem::saveRtcData(rtcData);  
 }
 
@@ -133,4 +144,26 @@ void HandMonitorConfig::setInitDone(bool value) {
 }
 bool HandMonitorConfig::getInitDone(void) {
   return _getDataPtr()->initDone;
+}
+
+void HandMonitorConfig::setStartPause(const char* startPause) {
+  strlcpy(_getDataPtr()->startPause, startPause, TIME_MAX_LENGTH + 1);
+  initRtcMemConfig();
+}
+const char* HandMonitorConfig::getStartPause() {
+  return _getDataPtr()->startPause;
+}
+void HandMonitorConfig::setEndPause(const char* endPause) {
+  strlcpy(_getDataPtr()->endPause, endPause, TIME_MAX_LENGTH + 1);
+  initRtcMemConfig();
+}
+const char* HandMonitorConfig::getEndPause() {
+  return _getDataPtr()->endPause;
+}
+void HandMonitorConfig::setPausePeriod(uint8_t period) {
+  _getDataPtr()->pausePeriod = period;
+  initRtcMemConfig();
+}
+uint8_t HandMonitorConfig::getPausePeriod() {
+  return _getDataPtr()->pausePeriod;
 }

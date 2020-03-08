@@ -31,6 +31,8 @@ char initPage[] = "\
 <div><span class='label'>" MSG_LEVEL ": </span><span class='value " JSON_TAG_LEVEL "'></span></div>\
 <div><span class='label'>" MSG_THRESHOLD ": </span><span class='value " JSON_TAG_THRESHOLD "'></span></div>\
 <div><span class='label'>" MSG_INIT_REFRESH_INTERVAL ": </span><span class='value " JSON_TAG_REFRESH "'></span></div>\
+<div><span class='label'>" MSG_PAUSE ": </span><span class='value " JSON_TAG_START_PAUSE "'></span> - <span class='value " JSON_TAG_END_PAUSE "'></span></div>\
+<div><span class='label'>" MSG_IS_PAUSED ": </span><span class='value " JSON_TAG_IS_PAUSED "'></span></div>\
 <hr/>\
 <h2>" MSG_DATA "</h2>\
 <form action='/listFiles' method='get'>\

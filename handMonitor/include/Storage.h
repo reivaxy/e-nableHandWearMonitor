@@ -12,6 +12,7 @@
 #pragma once
 
 #include "FS.h"
+#include "RTClock.h"
 #include <list>
 
 #define DEFAULT_FILE_CONTENT_ALLOC 3000
@@ -21,7 +22,7 @@ typedef std::list<char*> LineList;
 
 class Storage {
 public:
-   static void recordStateChange(int newState, int level);
+   static void recordStateChange(int newState, int level, RTClock *clock);
    static void listFiles(FileList *fileList);
    static void getFile(const char *fileName, File *f);
    static void createFakeData();

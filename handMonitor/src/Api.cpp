@@ -75,8 +75,9 @@ void Api::init() {
       data[JSON_TAG_APSSID_IP] = WiFi.softAPIP().toString();
       data[JSON_TAG_LEVEL] = level;
       data[JSON_TAG_WORN] = (level < config->getSensorThreshold())? MSG_YES : MSG_NO ;
-
-
+      data[JSON_TAG_START_PAUSE] = config->getStartPause();
+      data[JSON_TAG_END_PAUSE] = config->getEndPause();
+      data[JSON_TAG_IS_PAUSED] = clock->isPaused()?MSG_YES:MSG_NO;
 
       if (src.equals("init") || src.equals("admin")) {
          data[JSON_TAG_THRESHOLD] = config->getSensorThreshold();
@@ -230,9 +231,7 @@ void Api::close() {
 }
 
 void Api::initSave() {
-   rtcStoredData *rtcData = EspRtcMem::getRtcData();
    boolean restart = false;
-   boolean saveRtcData = false;
    // Read and save new name
    String name = server->arg("name");
    if (name.length() > 0) {
@@ -259,8 +258,11 @@ void Api::initSave() {
    String homeSsid = server->arg("homeSsid");
    if (homeSsid.length() > 0) {
       // TODO: add more checks
-      config->setSsid(homeSsid.c_str());
-      restart = true;
+      // If value changed, update and will need to restart
+      if(strncmp(config->getSsid(), homeSsid.c_str(), SSID_MAX_LENGTH) != 0) {
+         config->setSsid(homeSsid.c_str());
+         restart = true;
+      }
    } else {
       // Emptying ssid in the form is the way to remove this setting
       memset(config->getSsid(), 0, SSID_MAX_LENGTH);
@@ -283,16 +285,12 @@ void Api::initSave() {
    if (refreshInterval.length() > 0) {
       config->setRefreshInterval(refreshInterval.toInt());
       restart = true;
-      saveRtcData = true;
-      rtcData->period = refreshInterval.toInt();
    }
 
    String sensorThreshold = server->arg("sensorThreshold");
    if (sensorThreshold.length() > 0) {
       config->setSensorThreshold(sensorThreshold.toInt());
       restart = true;
-      saveRtcData = true;
-      rtcData->threshold = sensorThreshold.toInt();
    }
 
    String timeOffset = server->arg("timeOffset");
@@ -306,17 +304,26 @@ void Api::initSave() {
    if (dateTime.length() > 0) {
       RTClock *clock = new RTClock();
       clock->manualSetup(dateTime.c_str());
-      DebugPrintln(dateTime);
+   }
+   
+   String startPause = server->arg("startPause");
+   if (startPause.length() > 0) {
+      config->setStartPause(startPause.c_str());
    }
 
-   sendHtml(MSG_CONFIG_SAVED, 200);
-   if (saveRtcData) {
-      EspRtcMem::saveRtcData(rtcData);
+   String endPause = server->arg("endPause");
+   if (endPause.length() > 0) {
+      config->setEndPause(endPause.c_str());
    }
-   delay(500);
+
+   String intervalPause = server->arg("intervalPause");
+   config->setPausePeriod(intervalPause.toInt());
+
+   sendHtml(MSG_CONFIG_SAVED, 200);
+   config->setInitDone(true);
+   config->saveToEeprom();
+   delay(200);   // make sure page is displayed
    if (restart) {
-      config->setInitDone(true);
-      config->saveToEeprom();
       ESP.restart(); 
    }  
 }

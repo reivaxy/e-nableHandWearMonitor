@@ -18,23 +18,24 @@
 #define LEVEL_CHECK_PERIOD_WHEN_ON_CHARGE 2000 // in milliseconds
 
 HandMonitor::HandMonitor() {
+  clock = new RTClock();
+  clock->setup();
+   // Read ESP rct memory for threshold, wake up period and previous state
+   rtcData = EspRtcMem::getRtcData();
 }
 
 // We want to keep code here as short as possible to keep consumption low
 // when there is nothing to do
 void HandMonitor::init() {
    Serial.begin(19200);  // Not too fast to not get too much garbage on wake up
-   // Read ESP rct memory for threshold, wake up period and previous state
-   rtcStoredData *rtcData = EspRtcMem::getRtcData();
-
    pinMode(PIN_POWER_DETECT, INPUT);
    pinMode(PIN_IR_EMITTER, OUTPUT);
    isOnCharge = digitalRead(PIN_POWER_DETECT);
-   checkLevel(isOnCharge, rtcData);
+   checkLevel(isOnCharge);
    if (isOnCharge) {
       handleOnChargeMode();
    } else {
-      deepSleep(rtcData);
+      deepSleep();
    }
 }
 
@@ -45,9 +46,7 @@ void HandMonitor::handleOnChargeMode() {
       config->init();   
    }
   // Consider device removed.
-  Storage::recordStateChange(0, 0);
-  clock = new RTClock();
-  clock->setup();
+  Storage::recordStateChange(0, 0, clock);
   char dateTime[50];
   int error = clock->getTime(dateTime);
   if (!error) {
@@ -78,7 +77,7 @@ void HandMonitor::handleOnChargeMode() {
 }
 
 // check sensor level and record changes
-void HandMonitor::checkLevel(boolean isOnCharge, rtcStoredData* rtcData) {
+void HandMonitor::checkLevel(boolean isOnCharge) {
    // Activate IR led
    digitalWrite(PIN_IR_EMITTER, HIGH);
    // Level is high when device is not on worn
@@ -88,7 +87,7 @@ void HandMonitor::checkLevel(boolean isOnCharge, rtcStoredData* rtcData) {
    uint8_t previousState = rtcData->previous;  // previous state. 0: not worn, 1: worn
    uint8_t counter = rtcData->counter;         // to register a change after 3 consecutive measures.
 
-   DebugPrintf("Sensor: %d, threshold: %d, previousState: %d, counter: %d\n", level, threshold, previousState, counter);
+   DebugPrintf("\nSensor: %d, threshold: %d, previousState: %d, counter: %d, in pause period: %d\n", level, threshold, previousState, counter, clock->isPaused());
 
    // The first time, rtc memory contains random bits. If values are unexpected set them to 0
    if(previousState > 1) {
@@ -110,7 +109,7 @@ void HandMonitor::checkLevel(boolean isOnCharge, rtcStoredData* rtcData) {
          // Record only when not in charge.
          if (!isOnCharge) {
             DebugPrintln("Not on charge, recording change");
-            Storage::recordStateChange(newState, level);
+            Storage::recordStateChange(newState, level, clock);
          } else {
             DebugPrintln("On charge, not recording change");
          }
@@ -137,8 +136,14 @@ void HandMonitor::checkLevel(boolean isOnCharge, rtcStoredData* rtcData) {
    }
 }
 
-void HandMonitor::deepSleep(rtcStoredData* rtcData) {
+void HandMonitor::deepSleep() {
    uint8_t sleepTime = rtcData->period;
+   boolean isPaused = clock->isPaused();
+
+   if ((rtcData->counter == 0) && ((rtcData->previous == 0)) && isPaused) {
+      sleepTime = rtcData->pausePeriod;
+   }
+
    DebugPrintf("Sleep for %ds\n", sleepTime);
    WiFi.mode(WIFI_OFF);
    WiFi.forceSleepBegin(0);
@@ -158,7 +163,7 @@ void HandMonitor::loop() {
       delete(wifiSTA);  
       wifiSTA = NULL;  
       Utils::checkHeap("onCharge off");
-      deepSleep(rtcData);
+      deepSleep();
    }
    if (isOnCharge && wasOnCharge) {
       wifiAP->refresh();
@@ -168,7 +173,7 @@ void HandMonitor::loop() {
    time_t timeNow = millis();
    // Keep monitoriing level pin
    if ((timeNow - lastTimeLevelCheck > LEVEL_CHECK_PERIOD_WHEN_ON_CHARGE)) {
-      checkLevel(isOnCharge, rtcData);  // loop is only when on charge => true to not record level changes
+      checkLevel(isOnCharge);  // loop is only when on charge => true to not record level changes
       lastTimeLevelCheck = timeNow; 
    }
 

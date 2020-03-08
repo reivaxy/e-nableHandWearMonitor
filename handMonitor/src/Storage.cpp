@@ -2,9 +2,7 @@
 #include "Storage.h"
 #include "RTClock.h"
 
-void Storage::recordStateChange(int newState, int level) {
-   RTClock *clock = new RTClock();
-   clock->setup();
+void Storage::recordStateChange(int newState, int level, RTClock *clock) {
    char fileName[30];
    char recordDate[30];
    int result = clock->getFileName(fileName);
