@@ -61,8 +61,8 @@ void Storage::createFakeData() {
             char fileName[30];
             sprintf(fileName, "/%04d/%02d.txt", startYear + y, startMonth + m);
             File f = SPIFFS.open(fileName, "a+");
-            f.printf("%02d 10:02:30 1 234\n", startDay + d);
-            f.printf("%02d 14:12:08 0 456\n", startDay + d);
+            f.printf("%02d/%02d/%04d 10:02:30 1 234\n", startDay + d, m + startMonth, y + startYear);
+            f.printf("%02d/%02d/%04d 14:12:08 0 456\n", startDay + d, m + startMonth, y + startYear);
             f.close();
             yield(); 
          }

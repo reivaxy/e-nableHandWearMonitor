@@ -31,11 +31,13 @@
    }\
    input.value {\
       position:absolute;\
-      right:10px;\
+      right:5px;\
       width: 150px;\
    }\
    div.value {\
-      margin:5px 0 5px 0;\
+      position: relative;\
+      max-width: 450px;\
+      padding:5px 0px;\
    }\
 </style>\
 "

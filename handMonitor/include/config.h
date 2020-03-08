@@ -72,10 +72,10 @@ public:
   const char* getAPPwd(void);
 
   void setSsid(const char* ssid);
-  const char* getSsid(void);
+  char* getSsid(void);
 
   void setPwd(const char* pwd);
-  const char* getPwd(void);
+  char* getPwd(void);
 
   void setNtpServer(const char* ntpServer);
   const char* getNtpServer(void);

@@ -60,12 +60,11 @@ void Api::init() {
       RTClock *clock = new RTClock();
       clock->setup();      
       int error = clock->getTime(dateTime);
-      if(error != 0) {
-         strcpy(dateTime, "Not initialized");
+      if(error == 0) {         
+         data[JSON_TAG_DATE] = dateTime;
       }
-      data[JSON_TAG_DATE] = dateTime;
       // Is it configured to connect to home wifi ?
-      if (config->getSsid() != 0) {
+      if (strlen(config->getSsid()) != 0) {
          data[JSON_TAG_SSID] = config->getSsid();
          data[JSON_TAG_SSID_IP] = WiFi.localIP().toString();
          root[JSON_TAG_CSS_CLASS] = "hideManualTime"; // hide manual time setting
@@ -262,7 +261,16 @@ void Api::initSave() {
       // TODO: add more checks
       config->setSsid(homeSsid.c_str());
       restart = true;
+   } else {
+      // Emptying ssid in the form is the way to remove this setting
+      memset(config->getSsid(), 0, SSID_MAX_LENGTH);
+      memset(config->getPwd(), 0, PWD_MAX_LENGTH);
+      config->setSsid("");
+      config->setPwd("");
+      restart = true;
+
    }
+
    // Read and save new Home Pws
    String homePwd = server->arg("homePwd");
    if (homePwd.length() > 0) {

@@ -66,8 +66,8 @@ int RTClock::getRecordDate(char *fileName) {
    RtcDateTime dateTime;
    int lastError = get(&dateTime);
    if (lastError == 0) {
-      sprintf(fileName, "%02d %02d:%02d:%02d", 
-                  dateTime.Day(), dateTime.Hour(), dateTime.Minute(), dateTime.Second());
+      sprintf(fileName, "%02d/%02d/%04d %02d:%02d:%02d", 
+                  dateTime.Day(), dateTime.Month(), dateTime.Year(), dateTime.Hour(), dateTime.Minute(), dateTime.Second());
    }
    return lastError;   
 }

@@ -73,14 +73,14 @@ const char* HandMonitorConfig::getAPPwd() {
 void HandMonitorConfig::setSsid(const char* ssid) {
   strlcpy(_getDataPtr()->ssid, ssid, SSID_MAX_LENGTH + 1);
 }
-const char* HandMonitorConfig::getSsid() {
+char* HandMonitorConfig::getSsid() {
   return _getDataPtr()->ssid;
 }
 
 void HandMonitorConfig::setPwd(const char* pwd) {
   strlcpy(_getDataPtr()->pwd, pwd, PWD_MAX_LENGTH + 1);
 }
-const char* HandMonitorConfig::getPwd() {
+char* HandMonitorConfig::getPwd() {
   return _getDataPtr()->pwd;
 }
 
