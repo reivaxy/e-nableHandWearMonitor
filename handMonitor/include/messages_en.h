@@ -33,7 +33,7 @@
 #define MSG_INIT_REFRESH_INTERVAL "Refresh interval"
 #define MSG_INIT_TIME_OFFSET "Time offset (mn)"
 #define MSG_TIME_OFFSET "Current date/time fetched from a Time server, provide your timezone UTC time difference:"
-#define MSG_MANUAL_TIME_SETTING "Current date/time must be set manually"
+#define MSG_MANUAL_TIME_SETTING "Set current date/time manually:"
 
 #define MSG_INIT_START_PAUSE "Start pause at"
 #define MSG_INIT_END_PAUSE "End pause at"

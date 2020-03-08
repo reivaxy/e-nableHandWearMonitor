@@ -247,7 +247,7 @@ void Api::initSave() {
       config->setAPSsid(apSsid.c_str());
       restart = true;
    }
-   // Read and save new AP Pws
+   // Read and save new AP Pwd
    String apPwd = server->arg("apPwd");
    if (apPwd.length() > 0) {
       // TODO: add more checks
@@ -271,7 +271,7 @@ void Api::initSave() {
 
    }
 
-   // Read and save new Home Pws
+   // Read and save new Home Pwd
    String homePwd = server->arg("homePwd");
    if (homePwd.length() > 0) {
       // TODO: add more checks
@@ -300,6 +300,13 @@ void Api::initSave() {
       config->setTimeOffset(timeOffset.toInt());
       restart = true;
       NTP.getTime();
+   }
+   
+   String dateTime = server->arg("manualDateTime");
+   if (dateTime.length() > 0) {
+      RTClock *clock = new RTClock();
+      clock->manualSetup(dateTime.c_str());
+      DebugPrintln(dateTime);
    }
 
    sendHtml(MSG_CONFIG_SAVED, 200);

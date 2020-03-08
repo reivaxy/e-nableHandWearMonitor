@@ -38,7 +38,27 @@ void RTClock::setup(const char* _dateTime) {
       Serial.println("RTC was not actively running, starting now");
       clock->SetIsRunning(true);
    }   
+}
 
+void RTClock::manualSetup(const char* _dateTime) {
+   RTClock::setup();
+
+   // _dateTime is formatted 2020-03-08T07:33
+   int year = toInt(_dateTime, 4);
+   int month = toInt(_dateTime + 5, 2);
+   int day = toInt(_dateTime + 8, 2);
+
+   int hour = toInt(_dateTime + 11, 2);
+   int min = toInt(_dateTime + 14, 2);
+   int sec = 0;
+
+   RtcDateTime rtcDateTime = RtcDateTime(year, month, day, hour, min, sec);
+   // printDateTime(rtcDateTime);
+   clock->SetDateTime(rtcDateTime);
+   if (!clock->GetIsRunning()) {
+      Serial.println("RTC was not actively running, starting now");
+      clock->SetIsRunning(true);
+   }   
 }
 
 int RTClock::getTime(char* buffer) {
