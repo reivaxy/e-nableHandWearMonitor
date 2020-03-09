@@ -256,20 +256,19 @@ void Api::initSave() {
 
    // Read and save new Home SSID
    String homeSsid = server->arg("homeSsid");
+   // If value changed, will need to restart
+   if(strncmp(config->getSsid(), homeSsid.c_str(), SSID_MAX_LENGTH) != 0) {
+      restart = true;
+   }
    if (homeSsid.length() > 0) {
-      // TODO: add more checks
-      // If value changed, update and will need to restart
-      if(strncmp(config->getSsid(), homeSsid.c_str(), SSID_MAX_LENGTH) != 0) {
-         config->setSsid(homeSsid.c_str());
-         restart = true;
-      }
+      // TODO: add more checks ?
+      config->setSsid(homeSsid.c_str());
    } else {
       // Emptying ssid in the form is the way to remove this setting
       memset(config->getSsid(), 0, SSID_MAX_LENGTH);
       memset(config->getPwd(), 0, PWD_MAX_LENGTH);
       config->setSsid("");
       config->setPwd("");
-      restart = true;
 
    }
 

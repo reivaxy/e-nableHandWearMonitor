@@ -81,7 +81,7 @@ boolean RTClock::isPaused() {
       int startMin = toMin(rtcData->hourStartPause, rtcData->minStartPause);
       int endMin = toMin(rtcData->hourEndPause, rtcData->minEndPause);
 
-      return (min >= startMin) && (min < endMin) ;
+      return (min >= startMin) || (min < endMin) ;
    }
    return false;
 
