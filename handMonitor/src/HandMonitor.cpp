@@ -137,7 +137,7 @@ void HandMonitor::checkLevel(boolean isOnCharge) {
 }
 
 void HandMonitor::deepSleep() {
-   uint8_t sleepTime = rtcData->period;
+   uint16_t sleepTime = rtcData->period;  // period is 8b but pausePeriod is 16b
    boolean isPaused = clock->isPaused();
 
    if ((rtcData->counter == 0) && ((rtcData->previous == 0)) && isPaused) {
@@ -152,7 +152,6 @@ void HandMonitor::deepSleep() {
 
 void HandMonitor::loop() {
    isOnCharge = digitalRead(PIN_POWER_DETECT);
-   rtcStoredData *rtcData = EspRtcMem::getRtcData();
    // when module is no longer being charged, close the wifi access point
    if (wasOnCharge && !isOnCharge) {
       wasOnCharge = false;

@@ -160,10 +160,10 @@ void HandMonitorConfig::setEndPause(const char* endPause) {
 const char* HandMonitorConfig::getEndPause() {
   return _getDataPtr()->endPause;
 }
-void HandMonitorConfig::setPausePeriod(uint8_t period) {
+void HandMonitorConfig::setPausePeriod(uint16_t period) {
   _getDataPtr()->pausePeriod = period;
   initRtcMemConfig();
 }
-uint8_t HandMonitorConfig::getPausePeriod() {
+uint16_t HandMonitorConfig::getPausePeriod() {
   return _getDataPtr()->pausePeriod;
 }

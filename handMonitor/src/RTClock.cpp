@@ -80,8 +80,10 @@ boolean RTClock::isPaused() {
       int min = toMin(dateTime.Hour(), dateTime.Minute());
       int startMin = toMin(rtcData->hourStartPause, rtcData->minStartPause);
       int endMin = toMin(rtcData->hourEndPause, rtcData->minEndPause);
-
-      return (min >= startMin) || (min < endMin) ;
+      if (endMin < startMin) {
+         return !((min >=  endMin) && (min < startMin));
+      }
+      return (min >= startMin) && (min < endMin);
    }
    return false;
 

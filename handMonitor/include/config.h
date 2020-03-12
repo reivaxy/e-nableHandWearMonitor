@@ -52,7 +52,7 @@ struct HandMonitorConfigStruct:public XEEPROMConfigDataStruct {
   bool initDone; // false on new module/new config version. True at first config save.
   char startPause[TIME_MAX_LENGTH + 1];
   char endPause[TIME_MAX_LENGTH + 1];
-  uint8_t pausePeriod;
+  uint16_t pausePeriod;
 
 };
 
@@ -98,8 +98,8 @@ public:
   const char* getStartPause();
   void setEndPause(const char*);
   const char* getEndPause();
-  void setPausePeriod(uint8_t period);
-  uint8_t getPausePeriod(); 
+  void setPausePeriod(uint16_t period);
+  uint16_t getPausePeriod(); 
 
   bool isHomeWifiConfigured(void);
   HandMonitorConfigStruct* _getDataPtr(void);
