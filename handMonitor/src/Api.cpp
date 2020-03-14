@@ -169,13 +169,13 @@ void Api::init() {
 
    // list files in SPIFFS
    server->on("/listFiles", HTTP_GET, [&]() {
-      DebugPrintln("GET /files");
+      DebugPrintln("GET /listFiles");
       listFiles();
    });
 
    // Read one file in SPIFFS
    server->on("/readFile", HTTP_GET, [&]() {
-      DebugPrintln("GET /files");
+      DebugPrintln("GET /readFile");
       readFile(server->arg("file").c_str());
    });
 
@@ -420,10 +420,10 @@ void Api::handleFileUpload() { // upload a new file to the SPIFFS
 }
 
 void Api::handleNotFound() {
-   String uri = server->uri();
-   if (!uri.startsWith("/w/")) {
+   String uri = "/w" + server->uri();
+   if (!SPIFFS.exists(uri)) {
       sendText("Not found", 404);
       return;
    }
-   readFile(server->uri().c_str());
+   readFile(uri.c_str());
 }

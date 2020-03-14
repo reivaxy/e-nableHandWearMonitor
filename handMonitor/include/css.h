@@ -46,7 +46,8 @@
       right:3px;\
       width:80px;\
       height:72px;\
-      background-image:url(/w/logo.png)\
+      background-image:url(/logo.png)\
    }\
 </style>\
+<link href='custom.css' rel='stylesheet' type='text/css' />\
 "
