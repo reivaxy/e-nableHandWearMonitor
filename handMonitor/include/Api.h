@@ -38,7 +38,7 @@ public:
    void securityDelayWarning(const char* msg);
    void initSave();
    void startOTA();
-   void listFiles();
+   void listFiles(String dirName);
    void readFile(const char *fileName);
    void sendHtml(const char* html, int code);
    void sendHtml(const char* title, const char* message, int code);

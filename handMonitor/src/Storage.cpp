@@ -20,13 +20,16 @@ void Storage::recordStateChange(int newState, int level, RTClock *clock) {
    }
 }
 
-void Storage::listFiles(FileList *fileList) {
+void Storage::listFiles(FileList *fileList, String dirName) {
    if (!SPIFFS.begin()) {
       Serial.println("An Error has occurred while mounting SPIFFS");
       return;
-   }  
+   } 
+   if(dirName.length() == 0) {
+      dirName = "/d";
+   } 
    DebugPrintln("Listing files");
-   Dir dir = SPIFFS.openDir("/d");
+   Dir dir = SPIFFS.openDir(dirName);
    while(dir.next()) {
       char *fileName = strdup(dir.fileName().c_str());
       fileList->push_back(fileName+3);

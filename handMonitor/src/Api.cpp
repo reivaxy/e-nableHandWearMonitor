@@ -170,13 +170,25 @@ void Api::init() {
    // list files in SPIFFS
    server->on("/listFiles", HTTP_GET, [&]() {
       DebugPrintln("GET /listFiles");
-      listFiles();
+      listFiles(server->arg("dir"));
    });
 
    // Read one file in SPIFFS
    server->on("/readFile", HTTP_GET, [&]() {
       DebugPrintln("GET /readFile");
       readFile(server->arg("file").c_str());
+   });
+   
+   // delete one file from SPIFFS
+   server->on("/deleteFile", HTTP_GET, [&]() {
+      DebugPrintln("GET /deleteFile");
+      String fileName = server->arg("file");
+      if(fileName.length() == 0) {
+         sendHtml("Error", "file name can't be empty", 500);
+         return;
+      }
+      Storage::deleteFiles(fileName.c_str());
+      sendHtml("deleted", "File deleted", 200);
    });
 
    // Upload a file
@@ -206,16 +218,19 @@ void Api::readFile(const char* fileName) {
    Utils::checkHeap("After reading file");
 }
 
-void Api::listFiles() {
+void Api::listFiles(String dirName) {
    Utils::checkHeap("Before file listing");
    FileList fileList;
-   Storage::listFiles(&fileList);
+   Storage::listFiles(&fileList, dirName);
    size_t bufferSize = 1000 ;
    char* page = (char *)malloc(bufferSize);
    *page = 0;
+   if(dirName.length() == 0) {
+      dirName = "/d";
+   }
    for (FileList::iterator it = fileList.begin(); it != fileList.end(); it++) {
       char fileLine[100];
-      sprintf(fileLine, "<a href='/readFile?file=/d/%s'>%s</a><br/>", *it, *it); // TODO: filename should be urlencoded...
+      sprintf(fileLine, "<a href='/readFile?file=%s/%s'>%s</a><br/>", dirName.c_str(), *it, *it); // TODO: filename should be urlencoded...
       if(strlen(page) + strlen(fileLine) > bufferSize + 1) {
          DebugPrintln("Reallocating file list buffer");
          bufferSize += 1000;

@@ -23,7 +23,7 @@ typedef std::list<char*> LineList;
 class Storage {
 public:
    static void recordStateChange(int newState, int level, RTClock *clock);
-   static void listFiles(FileList *fileList);
+   static void listFiles(FileList *fileList, String dirName);
    static void getFile(const char *fileName, File *f);
    static void createFakeData();
    static void deleteFiles(const char* fileName);
