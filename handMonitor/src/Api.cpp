@@ -78,6 +78,7 @@ void Api::init() {
       data[JSON_TAG_START_PAUSE] = config->getStartPause();
       data[JSON_TAG_END_PAUSE] = config->getEndPause();
       data[JSON_TAG_IS_PAUSED] = clock->isPaused()?MSG_YES:MSG_NO;
+      data[JSON_TAG_PAUSE_PERIOD] = config->getPausePeriod();
 
       if (src.equals("init") || src.equals("admin")) {
          data[JSON_TAG_THRESHOLD] = config->getSensorThreshold();
@@ -104,6 +105,12 @@ void Api::init() {
       DebugPrintln("GET /init");
       printInitPage();
    }); 
+   
+   // reading a file from /w
+   server->onNotFound([&]() {
+      DebugPrintf("GET %s\n", server->uri().c_str());
+      handleNotFound();
+   }); 
 
    // Save config parameters
    server->on("/init", HTTP_POST, [&]() {
@@ -128,8 +135,9 @@ void Api::init() {
       Serial.println("Resetting to factory ");
       config->initFromDefault();
       config->saveToEeprom();
-      SPIFFS.begin();
-      SPIFFS.format();      
+      Storage::deleteFiles("");
+      // SPIFFS.begin();
+      // SPIFFS.format();      
       ESP.restart();
    });
    
@@ -137,9 +145,10 @@ void Api::init() {
    server->on("/erase", HTTP_POST, [&]() {
       DebugPrintln("POST /erase");
       securityDelayWarning("SPIFFS data erase");
-      Serial.println("Erasing SPIFFS ");
-      SPIFFS.begin();
-      SPIFFS.format();      
+      Serial.println("Erasing Files ");
+      Storage::deleteFiles("");
+      // SPIFFS.begin();
+      // SPIFFS.format();       
    });
 
    // Create fake data
@@ -170,6 +179,13 @@ void Api::init() {
       readFile(server->arg("file").c_str());
    });
 
+   // Upload a file
+   server->on("/upload", HTTP_POST, [&]() {
+     server->send(200); },
+     [&]() {
+     handleFileUpload(); }     
+   );
+
    server->begin();
 }
 
@@ -199,7 +215,7 @@ void Api::listFiles() {
    *page = 0;
    for (FileList::iterator it = fileList.begin(); it != fileList.end(); it++) {
       char fileLine[100];
-      sprintf(fileLine, "<a href='/readFile?file=%s'>%s</a><br/>", *it, *it); // TODO: filename should be urlencoded...
+      sprintf(fileLine, "<a href='/readFile?file=/d/%s'>%s</a><br/>", *it, *it); // TODO: filename should be urlencoded...
       if(strlen(page) + strlen(fileLine) > bufferSize + 1) {
          DebugPrintln("Reallocating file list buffer");
          bufferSize += 1000;
@@ -342,7 +358,7 @@ void Api::sendHtml(const char* message, int code) {
 
 void Api::sendHtml(const char* title, const char* message, int code) {
    char html[] = "<html><head><title>%s</title><meta name='viewport' content='width=device-width, initial-scale=1'>"\
-   "<meta charset='utf-8'>" CSS "</head><h1><body><a href='/'>" MSG_TITLE "</a></h1>%s</body></html>";
+   "<meta charset='utf-8'>" CSS "</head><h1><body><div class='logo'></div><a href='/'>" MSG_TITLE "</a></h1>%s</body></html>";
    char *htmlPage = (char *)malloc(strlen(html) + strlen(title) + strlen(message) + 1);  // +1 is actually useless since %s is replaced ;)
    sprintf(htmlPage, html, title, message);
    server->sendHeader("Connection", "close");
@@ -380,3 +396,34 @@ void Api::setLevel(int _level) {
    level = _level;
 }
 
+void Api::handleFileUpload() { // upload a new file to the SPIFFS
+  SPIFFS.begin();
+  HTTPUpload& upload = server->upload();
+  if(upload.status == UPLOAD_FILE_START){
+    String filename = upload.filename;
+    filename = "/w/"+filename;
+    DebugPrintf("handleFileUpload Name: %s\n", filename.c_str());
+    fsUploadFile = SPIFFS.open(filename, "w");            // Open the file for writing in SPIFFS (create if it doesn't exist)
+    filename = String();
+  } else if(upload.status == UPLOAD_FILE_WRITE){
+    if(fsUploadFile)
+      fsUploadFile.write(upload.buf, upload.currentSize); // Write the received bytes to the file
+  } else if(upload.status == UPLOAD_FILE_END){
+    if(fsUploadFile) {                                    // If the file was successfully created
+      fsUploadFile.close();                               // Close the file again
+      DebugPrintf("handleFileUpload Size: %d\n", upload.totalSize);
+      sendHtml("Uploaded", "Upload successful", 200);
+    } else {
+      sendHtml("Upload failed", "Error can't create file", 500);
+    }
+  }
+}
+
+void Api::handleNotFound() {
+   String uri = server->uri();
+   if (!uri.startsWith("/w/")) {
+      sendText("Not found", 404);
+      return;
+   }
+   readFile(server->uri().c_str());
+}

@@ -26,5 +26,6 @@ public:
    static void listFiles(FileList *fileList);
    static void getFile(const char *fileName, File *f);
    static void createFakeData();
+   static void deleteFiles(const char* fileName);
 };
  

@@ -23,6 +23,7 @@ char homePage[] = "\
 " CSS "\
 </head>\
 <body>\
+<div class='logo'></div>\
 <h1>" MSG_TITLE "</h1>\
 <h2 class='value " JSON_TAG_NAME "'></h2>\
 <div><span class='label'>" MSG_CURRENT_TIME ": </span><span class='value " JSON_TAG_DATE "'>" MSG_UNDEFINED "</span></div>\

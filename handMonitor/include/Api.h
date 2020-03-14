@@ -16,6 +16,7 @@
  #include "Ota.h"
  #include "debug.h"
  #include "Utils.h"
+ #include "FS.h"
 
 class Api {
 public:
@@ -25,6 +26,8 @@ public:
    ESP8266WebServer* server = NULL;
    Ota* ota = NULL;
    int level = 0;
+   File fsUploadFile;
+
 
    void init();
    void close();
@@ -43,4 +46,6 @@ public:
    void sendPage(const char* page);
    void sendJs(const char* message, int code);
    void setLevel(int level);
+   void handleFileUpload();
+   void handleNotFound();
 };

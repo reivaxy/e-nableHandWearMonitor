@@ -15,6 +15,7 @@
    body {\
       font-family: sans-serif;\
       font-size:15px;\
+      background-color:#bfe3fd;\
    }\
    span.value {\
       color: blue;\
@@ -38,6 +39,14 @@
       position: relative;\
       max-width: 450px;\
       padding:5px 0px;\
+   }\
+   div.logo {\
+      position: absolute;\
+      top:3px;\
+      right:3px;\
+      width:80px;\
+      height:72px;\
+      background-image:url(/w/logo.png)\
    }\
 </style>\
 "

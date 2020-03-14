@@ -22,6 +22,7 @@ char initPage[] = "\
 " CSS "\
 </head>\
 <body>\
+<div class='logo'></div>\
 <h1><a href='/'>" MSG_TITLE "</a></h1>\
 <h2 class='value " JSON_TAG_NAME "'></h2>\
 <div><span class='label'>" MSG_BUILD_DATE ": </span><span class='value'>" __DATE__ " " __TIME__ "</span></div>\
@@ -30,9 +31,11 @@ char initPage[] = "\
 <div><span class='label'>" MSG_AP_WIFI ": </span><span class='value " JSON_TAG_APSSID "'></span><span class='label'>, IP: </span><span class='value " JSON_TAG_APSSID_IP "'></span></div>\
 <div><span class='label'>" MSG_LEVEL ": </span><span class='value " JSON_TAG_LEVEL "'></span></div>\
 <div><span class='label'>" MSG_THRESHOLD ": </span><span class='value " JSON_TAG_THRESHOLD "'></span></div>\
-<div><span class='label'>" MSG_INIT_REFRESH_INTERVAL ": </span><span class='value " JSON_TAG_REFRESH "'></span></div>\
+<div><span class='label'>" MSG_WORN ": </span><span class='value " JSON_TAG_WORN "'/></div>\
+<div><span class='label'>" MSG_INIT_REFRESH_INTERVAL ": </span><span class='value " JSON_TAG_REFRESH "'></span>s</div>\
 <div><span class='label'>" MSG_PAUSE ": </span><span class='value " JSON_TAG_START_PAUSE "'></span> - <span class='value " JSON_TAG_END_PAUSE "'></span></div>\
 <div><span class='label'>" MSG_IS_PAUSED ": </span><span class='value " JSON_TAG_IS_PAUSED "'></span></div>\
+<div><span class='label'>" MSG_INIT_PAUSE_REFRESH_INTERVAL ": </span><span class='value " JSON_TAG_PAUSE_PERIOD "'></span>s</div>\
 <hr/>\
 <h2>" MSG_DATA "</h2>\
 <form action='/listFiles' method='get'>\
