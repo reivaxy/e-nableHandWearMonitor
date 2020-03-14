@@ -15,12 +15,21 @@
 #define DATA_SCRIPT "\
 <script>\
 if (jsonData) {\
-   for(var key in jsonData) {\
-      var element = document.querySelector('.' + key);\
-      if (element) {\
-         var value = jsonData[key];\
-         element.textContent = value;\
+   for(var key in jsonData.data) {\
+      var elements = document.querySelectorAll('.' + key);\
+      if (elements.length) {\
+         elements.forEach(element => {\
+            var value = jsonData.data[key];\
+            if (element.nodeName == 'INPUT') {\
+               element.value = value;\
+            } else {\
+               element.textContent = value;\
+            }\
+         });\
       }\
+   }\
+   if(jsonData.cssClass) {\
+      document.body.className = jsonData.cssClass;\
    }\
 }\
 </script>\

@@ -11,6 +11,7 @@
 
 #include "Api.h"
 #include "Storage.h"
+#include "EspRtcMem.h"
 #include "WifiSTA.h"
 #include "RTClock.h"
 #include "homePage.h"
@@ -46,49 +47,56 @@ void Api::init() {
    // some json data 
    server->on("/data", HTTP_GET, [&]() {
       DebugPrintln("GET /data");
-      char data[500];
+      char jsonData[500];
       String src = server->arg("src"); 
-      strcpy(data, "var jsonData=");
+      strcpy(jsonData, "var jsonData=");
       StaticJsonBuffer<JSON_OBJECT_SIZE(15) + 100> jsonBuffer;    
       // Create the root object
       JsonObject& root = jsonBuffer.createObject();
-      root[JSON_TAG_NAME] = config->getName();
+      JsonObject& data = jsonBuffer.createObject();
+      root[JSON_TAG_DATA] = data;
+      data[JSON_TAG_NAME] = config->getName();
       char dateTime[50];
       RTClock *clock = new RTClock();
       clock->setup();      
       int error = clock->getTime(dateTime);
-      if(error != 0) {
-         strcpy(dateTime, "Not initialized");
+      if(error == 0) {         
+         data[JSON_TAG_DATE] = dateTime;
       }
-      root[JSON_TAG_DATE] = dateTime;
       // Is it configured to connect to home wifi ?
-      if (config->getSsid() != 0) {
-         root[JSON_TAG_SSID] = config->getSsid();
-         root[JSON_TAG_SSID_IP] = WiFi.localIP().toString();
+      if (strlen(config->getSsid()) != 0) {
+         data[JSON_TAG_SSID] = config->getSsid();
+         data[JSON_TAG_SSID_IP] = WiFi.localIP().toString();
+         root[JSON_TAG_CSS_CLASS] = "hideManualTime"; // hide manual time setting
+      } else {
+         root[JSON_TAG_CSS_CLASS] = "hideTimeOffset"; // hide time offset setting
       }
-      root[JSON_TAG_APSSID] = config->getAPSsid();
-      root[JSON_TAG_APSSID_IP] = WiFi.softAPIP().toString();
-      root[JSON_TAG_LEVEL] = level;
-      root[JSON_TAG_WORN] = (level < config->getSensorThreshold())? MSG_YES : MSG_NO ;
+      data[JSON_TAG_APSSID] = config->getAPSsid();
+      data[JSON_TAG_APSSID_IP] = WiFi.softAPIP().toString();
+      data[JSON_TAG_LEVEL] = level;
+      data[JSON_TAG_WORN] = (level < config->getSensorThreshold())? MSG_YES : MSG_NO ;
+      data[JSON_TAG_START_PAUSE] = config->getStartPause();
+      data[JSON_TAG_END_PAUSE] = config->getEndPause();
+      data[JSON_TAG_IS_PAUSED] = clock->isPaused()?MSG_YES:MSG_NO;
 
       if (src.equals("init") || src.equals("admin")) {
-         root[JSON_TAG_THRESHOLD] = config->getSensorThreshold();
-         root[JSON_TAG_REFRESH] = config->getRefreshInterval();
+         data[JSON_TAG_THRESHOLD] = config->getSensorThreshold();
+         data[JSON_TAG_REFRESH] = config->getRefreshInterval();
       }
       
       if (src.equals("admin")) {
          if (SPIFFS.begin()) {
             FSInfo fs_info;
             SPIFFS.info(fs_info);         
-            root[JSON_TAG_MEMORY_SIZE] = fs_info.totalBytes;
-            root[JSON_TAG_MEMORY_USED] =  fs_info.usedBytes;
-            root[JSON_TAG_MEMORY_MAX_FILES] = fs_info.maxOpenFiles;
+            data[JSON_TAG_MEMORY_SIZE] = fs_info.totalBytes;
+            data[JSON_TAG_MEMORY_USED] =  fs_info.usedBytes;
+            data[JSON_TAG_MEMORY_MAX_FILES] = fs_info.maxOpenFiles;
          }
       }
 
-      root.printTo(data+strlen(data), 500);
-      strcat(data, ";");
-      sendJs(data, 200);
+      root.printTo(jsonData+strlen(jsonData), 500);
+      strcat(jsonData, ";");
+      sendJs(jsonData, 200);
    });
 
    // Display config page
@@ -223,9 +231,7 @@ void Api::close() {
 }
 
 void Api::initSave() {
-   rtcStoredData *rtcData = Storage::getRtcData();
    boolean restart = false;
-   boolean saveRtcData = false;
    // Read and save new name
    String name = server->arg("name");
    if (name.length() > 0) {
@@ -240,7 +246,7 @@ void Api::initSave() {
       config->setAPSsid(apSsid.c_str());
       restart = true;
    }
-   // Read and save new AP Pws
+   // Read and save new AP Pwd
    String apPwd = server->arg("apPwd");
    if (apPwd.length() > 0) {
       // TODO: add more checks
@@ -250,12 +256,23 @@ void Api::initSave() {
 
    // Read and save new Home SSID
    String homeSsid = server->arg("homeSsid");
-   if (homeSsid.length() > 0) {
-      // TODO: add more checks
-      config->setSsid(homeSsid.c_str());
+   // If value changed, will need to restart
+   if(strncmp(config->getSsid(), homeSsid.c_str(), SSID_MAX_LENGTH) != 0) {
       restart = true;
    }
-   // Read and save new Home Pws
+   if (homeSsid.length() > 0) {
+      // TODO: add more checks ?
+      config->setSsid(homeSsid.c_str());
+   } else {
+      // Emptying ssid in the form is the way to remove this setting
+      memset(config->getSsid(), 0, SSID_MAX_LENGTH);
+      memset(config->getPwd(), 0, PWD_MAX_LENGTH);
+      config->setSsid("");
+      config->setPwd("");
+
+   }
+
+   // Read and save new Home Pwd
    String homePwd = server->arg("homePwd");
    if (homePwd.length() > 0) {
       // TODO: add more checks
@@ -267,16 +284,12 @@ void Api::initSave() {
    if (refreshInterval.length() > 0) {
       config->setRefreshInterval(refreshInterval.toInt());
       restart = true;
-      saveRtcData = true;
-      rtcData->period = refreshInterval.toInt();
    }
 
    String sensorThreshold = server->arg("sensorThreshold");
    if (sensorThreshold.length() > 0) {
       config->setSensorThreshold(sensorThreshold.toInt());
       restart = true;
-      saveRtcData = true;
-      rtcData->threshold = sensorThreshold.toInt();
    }
 
    String timeOffset = server->arg("timeOffset");
@@ -285,15 +298,31 @@ void Api::initSave() {
       restart = true;
       NTP.getTime();
    }
+   
+   String dateTime = server->arg("manualDateTime");
+   if (dateTime.length() > 0) {
+      RTClock *clock = new RTClock();
+      clock->manualSetup(dateTime.c_str());
+   }
+   
+   String startPause = server->arg("startPause");
+   if (startPause.length() > 0) {
+      config->setStartPause(startPause.c_str());
+   }
+
+   String endPause = server->arg("endPause");
+   if (endPause.length() > 0) {
+      config->setEndPause(endPause.c_str());
+   }
+
+   String intervalPause = server->arg("intervalPause");
+   config->setPausePeriod(intervalPause.toInt());
 
    sendHtml(MSG_CONFIG_SAVED, 200);
-   if (saveRtcData) {
-      Storage::saveRtcData(rtcData);
-   }
-   delay(500);
+   config->setInitDone(true);
+   config->saveToEeprom();
+   delay(200);   // make sure page is displayed
    if (restart) {
-      config->setInitDone(true);
-      config->saveToEeprom();
       ESP.restart(); 
    }  
 }

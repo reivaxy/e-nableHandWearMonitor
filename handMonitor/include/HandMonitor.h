@@ -19,6 +19,7 @@
 #include "WifiSTA.h"
 #include "Utils.h"
 #include "Storage.h"
+#include "EspRtcMem.h"
 
 
 class HandMonitor {
@@ -27,8 +28,8 @@ public:
   void loop();
   void init();
   void handleOnChargeMode();
-  void checkLevel(boolean ignoreChanges, rtcStoredData* rtcData);
-  void deepSleep(rtcStoredData* rtcData);
+  void checkLevel(boolean ignoreChanges);
+  void deepSleep();
   
   boolean isOnCharge = false;
   boolean wasOnCharge = false;
@@ -36,6 +37,7 @@ public:
   WifiSTA *wifiSTA = NULL;
   HandMonitorConfig* config = NULL;
   RTClock *clock = NULL;
+  rtcStoredData *rtcData = NULL;
   time_t lastTimeDisplay = 0;
   time_t lastTimeLevelCheck = 0;
 

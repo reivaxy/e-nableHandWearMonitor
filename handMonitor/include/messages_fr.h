@@ -32,6 +32,15 @@
 #define MSG_INIT_SENSOR_THRESHOLD "Seuil de détection"
 #define MSG_INIT_REFRESH_INTERVAL "Intervale de réveil"
 #define MSG_INIT_TIME_OFFSET "Decalage horaire (mn)"
+#define MSG_TIME_OFFSET "Réglage date/heure depuis un serveur de Temps, indiquez le décalage horaire UTC:"
+#define MSG_MANUAL_TIME_SETTING "Réglage manuel date et heure:"
+
+#define MSG_PAUSE "Pause (début - fin)"
+#define MSG_INIT_START_PAUSE "Début de pause"
+#define MSG_INIT_END_PAUSE "Fin de pause"
+#define MSG_INIT_PAUSE_REFRESH_INTERVAL "Intervale pendant pause"
+#define MSG_IS_PAUSED "En pause"
+
 #define MSG_INIT_NAME "Nom"
 
 #define MSG_LEVEL "Niveau mesuré"

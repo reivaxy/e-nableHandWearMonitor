@@ -2,11 +2,7 @@
 #include "Storage.h"
 #include "RTClock.h"
 
-rtcStoredData Storage::_rtcData;
-
-void Storage::recordStateChange(int newState, int level) {
-   RTClock *clock = new RTClock();
-   clock->setup();
+void Storage::recordStateChange(int newState, int level, RTClock *clock) {
    char fileName[30];
    char recordDate[30];
    int result = clock->getFileName(fileName);
@@ -22,19 +18,6 @@ void Storage::recordStateChange(int newState, int level) {
       f.printf("%s %d %d\n", recordDate, newState, level);
       f.close();
    }
-
-   // Store new state in ESP RTC mem so that it can be read at next wake up.
-   ESP.rtcUserMemoryWrite(LAST_RTC_ADDR, (uint32_t*) &_rtcData, sizeof(rtcStoredData));
-
-}
-
-rtcStoredData* Storage::getRtcData() {
-   ESP.rtcUserMemoryRead(LAST_RTC_ADDR, (uint32_t*) &_rtcData, sizeof(rtcStoredData));
-   return &_rtcData;
-}
-
-void Storage::saveRtcData(rtcStoredData* data) {
-   ESP.rtcUserMemoryWrite(LAST_RTC_ADDR, (uint32_t*) data, sizeof(rtcStoredData));
 }
 
 void Storage::listFiles(FileList *fileList) {
@@ -76,8 +59,8 @@ void Storage::createFakeData() {
             char fileName[30];
             sprintf(fileName, "/%04d/%02d.txt", startYear + y, startMonth + m);
             File f = SPIFFS.open(fileName, "a+");
-            f.printf("%02d 10:02:30 1 234\n", startDay + d);
-            f.printf("%02d 14:12:08 0 456\n", startDay + d);
+            f.printf("%02d/%02d/%04d 10:02:30 1 234\n", startDay + d, m + startMonth, y + startYear);
+            f.printf("%02d/%02d/%04d 14:12:08 0 456\n", startDay + d, m + startMonth, y + startYear);
             f.close();
             yield(); 
          }

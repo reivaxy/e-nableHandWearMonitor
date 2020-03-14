@@ -4,27 +4,35 @@
  *  Author  : Xavier Grosjean & Thomas Broussard
  * 
  *  ---------------------------------------------------------------------------------------------------------------------------------------------
- *  Description : Hand monitor class for esp file storage 
+ *  Description : Hand monitor class for esp "rctmem" storage
  * 
  * =============================================================================================================================================
  */
 
 #pragma once
 
-#include "FS.h"
-#include "RTClock.h"
-#include <list>
+#include <Arduino.h>
 
-#define DEFAULT_FILE_CONTENT_ALLOC 3000
 
-typedef std::list<char*> FileList;
-typedef std::list<char*> LineList;
+#define LAST_RTC_ADDR 116  // address of last 12 bytes of 512 bits: (512/4)-12 
 
-class Storage {
+typedef struct  {
+  uint8_t previous;
+  uint8_t counter;
+  uint16_t period;
+  uint16_t threshold;
+  uint8_t hourStartPause;
+  uint8_t minStartPause;
+  uint8_t hourEndPause;
+  uint8_t minEndPause;
+  uint16_t pausePeriod;
+} rtcStoredData;
+
+
+class EspRtcMem {
 public:
-   static void recordStateChange(int newState, int level, RTClock *clock);
-   static void listFiles(FileList *fileList);
-   static void getFile(const char *fileName, File *f);
-   static void createFakeData();
+  static rtcStoredData* getRtcData();
+  static void saveRtcData(rtcStoredData* rtcData);
+  static rtcStoredData _rtcData;
 };
  

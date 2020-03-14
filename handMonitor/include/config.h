@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "Utils.h"
 #include <XEEPROMConfig.h>
 
 // Increment this when new fields (or new default values) are added to HandMonitorConfigStruct
@@ -27,6 +28,8 @@
 #define EMAIL_MAX_LENGTH 30
 #define NAME_MAX_LENGTH 20
 #define AUTH_MAX_LENGTH 200
+
+#define TIME_MAX_LENGTH 5
 
 #define DEFAULT_NTP_SERVER "time.google.com"
 
@@ -47,6 +50,9 @@ struct HandMonitorConfigStruct:public XEEPROMConfigDataStruct {
   int timeOffset;  // in minutes
 
   bool initDone; // false on new module/new config version. True at first config save.
+  char startPause[TIME_MAX_LENGTH + 1];
+  char endPause[TIME_MAX_LENGTH + 1];
+  uint16_t pausePeriod;
 
 };
 
@@ -55,6 +61,7 @@ public:
   HandMonitorConfig(const char* moduleName);
   HandMonitorConfig(const char* moduleName, unsigned int dataSize);
   virtual void initFromDefault();
+  void initRtcMemConfig();
 
   void init() override;
   void setName(const char*);
@@ -67,10 +74,10 @@ public:
   const char* getAPPwd(void);
 
   void setSsid(const char* ssid);
-  const char* getSsid(void);
+  char* getSsid(void);
 
   void setPwd(const char* pwd);
-  const char* getPwd(void);
+  char* getPwd(void);
 
   void setNtpServer(const char* ntpServer);
   const char* getNtpServer(void);
@@ -87,6 +94,12 @@ public:
   void setInitDone(bool value);
   bool getInitDone(void);
 
+  void setStartPause(const char*);
+  const char* getStartPause();
+  void setEndPause(const char*);
+  const char* getEndPause();
+  void setPausePeriod(uint16_t period);
+  uint16_t getPausePeriod(); 
 
   bool isHomeWifiConfigured(void);
   HandMonitorConfigStruct* _getDataPtr(void);
