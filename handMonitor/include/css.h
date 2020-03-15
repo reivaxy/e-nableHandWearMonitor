@@ -15,6 +15,7 @@
    body {\
       font-family: sans-serif;\
       font-size:15px;\
+      background-color:#bfe3fd;\
    }\
    span.value {\
       color: blue;\
@@ -39,5 +40,14 @@
       max-width: 450px;\
       padding:5px 0px;\
    }\
+   div.logo {\
+      position: absolute;\
+      top:3px;\
+      right:3px;\
+      width:80px;\
+      height:72px;\
+      background-image:url(/logo.png)\
+   }\
 </style>\
+<link href='custom.css' rel='stylesheet' type='text/css' />\
 "

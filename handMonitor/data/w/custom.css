@@ -1,0 +1,20 @@
+body {
+    background-color: #ff4b4b;
+    background-image: url(ironman.png);
+    background-repeat: no-repeat;
+    background-position: center 40px;
+    color: yellow;
+}
+
+span.value {
+    color: white;
+}
+
+a {
+    color:white;
+}
+
+h1 a {
+    color:yellow;
+    cursor:pointer;
+}

@@ -97,7 +97,7 @@ int RTClock::getFileName(char *fileName) {
    RtcDateTime dateTime;
    int lastError = get(&dateTime);
    if (lastError == 0) {
-      sprintf(fileName, "/%04d/%02d.txt", 
+      sprintf(fileName, "/d/%04d/%02d.txt", 
                   dateTime.Year(), dateTime.Month());
    }
    return lastError;   
