@@ -48,6 +48,9 @@
       height:72px;\
       background-image:url(/logo.png)\
    }\
+   a.erase, a.download {\
+      text-decoration:none;\
+   }\
 </style>\
 <link href='custom.css' rel='stylesheet' type='text/css' />\
 "

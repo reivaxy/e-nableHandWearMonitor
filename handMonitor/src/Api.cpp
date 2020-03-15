@@ -19,6 +19,7 @@
 #include "adminPage.h"
 #include <ArduinoJson.h>
 #include "jsonTags.h"
+#include "messages.h"
 
 Api::Api(HandMonitorConfig *_config) {
    config = _config;
@@ -136,19 +137,24 @@ void Api::init() {
       config->initFromDefault();
       config->saveToEeprom();
       Storage::deleteFiles("");
-      // SPIFFS.begin();
-      // SPIFFS.format();      
       ESP.restart();
    });
    
-    // erase SPIFFS only
-   server->on("/erase", HTTP_POST, [&]() {
-      DebugPrintln("POST /erase");
-      securityDelayWarning("SPIFFS data erase");
+    // delete files from /d directory (data files)
+   server->on("/deleteAll", HTTP_POST, [&]() {
+      DebugPrintln("POST /deleteAll");
+      securityDelayWarning("SPIFFS data file delete");
       Serial.println("Erasing Files ");
-      Storage::deleteFiles("");
-      // SPIFFS.begin();
-      // SPIFFS.format();       
+      Storage::deleteFiles("");      
+   });
+
+    // Format SPIFFS only
+   server->on("/format", HTTP_POST, [&]() {
+      DebugPrintln("POST /format");
+      securityDelayWarning("SPIFFS format");
+      Serial.println("Format SPIFFS ");
+      SPIFFS.begin();
+      SPIFFS.format();       
    });
 
    // Create fake data
@@ -188,7 +194,16 @@ void Api::init() {
          return;
       }
       Storage::deleteFiles(fileName.c_str());
-      sendHtml("deleted", "File deleted", 200);
+      char message[100];
+      char dirName[100];
+      sprintf(dirName, "%s", fileName.c_str());
+      char* slash = strchr(dirName+1, '/');
+      if (slash != NULL) {
+         *slash = 0;
+      }
+
+      sprintf(message, "File deleted<br><a href='/listFiles?dir=%s'>Retour</a>", dirName);
+      sendHtml("deleted", message, 200);
    });
 
    // Upload a file
@@ -222,15 +237,25 @@ void Api::listFiles(String dirName) {
    Utils::checkHeap("Before file listing");
    FileList fileList;
    Storage::listFiles(&fileList, dirName);
-   size_t bufferSize = 1000 ;
+   size_t bufferSize = 2000 ;
    char* page = (char *)malloc(bufferSize);
    *page = 0;
    if(dirName.length() == 0) {
       dirName = "/d";
    }
    for (FileList::iterator it = fileList.begin(); it != fileList.end(); it++) {
-      char fileLine[100];
-      sprintf(fileLine, "<a href='/readFile?file=%s/%s'>%s</a><br/>", dirName.c_str(), *it, *it); // TODO: filename should be urlencoded...
+      char fileLine[400];
+      char download[150];
+      char erase[200];
+      
+      if (server->arg("del").length()!=0 || dirName.equals("/w")) {
+         sprintf(erase, "<a alt='%s' class='erase' onClick=\"result=confirm('Confirm ?'); if(!result) return false;\" href='/deleteFile?file=%s/%s'>&#8855;</a>",
+                        MSG_DELETE, dirName.c_str(), *it);
+      } else {
+         *erase = 0;
+      }
+      sprintf(download, "<a alt='%s' class='download' download='%s' href='/readFile?file=%s/%s'>&#x21F2;</a>", MSG_DOWNLOAD, *it, dirName.c_str(), *it);
+      sprintf(fileLine, "%s <a href='/readFile?file=%s/%s'>%s</a> %s<br/>", download, dirName.c_str(), *it, *it, erase);
       if(strlen(page) + strlen(fileLine) > bufferSize + 1) {
          DebugPrintln("Reallocating file list buffer");
          bufferSize += 1000;
