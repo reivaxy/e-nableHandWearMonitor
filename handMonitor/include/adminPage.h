@@ -52,6 +52,10 @@ char adminPage[] = "\
 <div><span class='label'>" MSG_MEMORY_USED ": </span><span class='value " JSON_TAG_MEMORY_USED "'></span></div>\
 <div><span class='label'>" MSG_MEMORY_MAX_FILES ": </span><span class='value " JSON_TAG_MEMORY_MAX_FILES "'></span></div>\
 <hr/>\
+<form method='post' action='/upload' enctype='multipart/form-data'>\
+    <input type='file' name='name'>\
+    <input class='button' type='submit' value='Upload'>\
+</form>\
 <form action='/reset' method='post'>\
   <input type='submit' value='" MSG_RESET_ALL "'/>\
 </form>\
@@ -66,10 +70,6 @@ char adminPage[] = "\
 </form>\
 <form action='/ota' method='post'>\
   <input type='submit' value='" MSG_START_OTA "'/>\
-</form>\
-<form method='post' action='/upload' enctype='multipart/form-data'>\
-    <input type='file' name='name'>\
-    <input class='button' type='submit' value='Upload'>\
 </form>\
 " DATA_SCRIPT "\
 </body>\

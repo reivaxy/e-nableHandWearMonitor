@@ -43,6 +43,8 @@
 
 #define MSG_INIT_NAME "Name"
 
+#define MSG_DOWNLOAD "Download"
+#define MSG_DELETE "Delete"
 #define MSG_LEVEL "Current level"
 #define MSG_THRESHOLD "Threshold level"
 #define MSG_INIT_PAGE "Settings"

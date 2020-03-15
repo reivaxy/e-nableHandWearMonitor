@@ -43,6 +43,8 @@
 
 #define MSG_INIT_NAME "Nom"
 
+#define MSG_DOWNLOAD "Télécharger"
+#define MSG_DELETE "Effacer"
 #define MSG_LEVEL "Niveau mesuré"
 #define MSG_THRESHOLD "Seuil niveau"
 #define MSG_INIT_PAGE "Configuration"
