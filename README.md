@@ -67,13 +67,14 @@ The "File list" button will display a page listing all the files in the esp memo
 
 <kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileList.png" width="300px"></kbd>
 
-Then, clicking on a file, you can display its content, or download it with a long press / download file.
+You can click on a file name to view its content, or on the arrow in front of it to download it.
+
 
 <kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileContent.png" width="200px"></kbd>
 
-This file was made with a 10 seconds wake up period, and with a state change each time, to make a biiig file. I had no issue recording 15695 lines, in a 223K file. 
+I had no issue recording 15695 lines, in a 223K file. 
 
-Each entry is composed of the day, then the hour, minute, second, then the state: 0 means device not worn, 1 means device worn. In newer versions, the actual level of the sensor is then added to the line, to help troubleshoot, if necessary.
+Each entry is composed of the date, then the hour, minute, second, then the state: 0 means device not worn, 1 means device worn. The actual level of the sensor is then added to the line, to help troubleshoot, if necessary.
 
 
 ## "Admin" page
@@ -84,7 +85,11 @@ On this page you can update the wake up period as well as the sensor level thres
 
 There is also some information on the SPIFFS memory usage, and more will be added if needed.
 
+The "upload file" feature allows you to change the look of the pages if you upload a "custom.css" file. You can also upload images referenced in the css file. Check out the data/w directory for an example featuring an ironman skin.
+
+
 <kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/adminPage.jpg" width="300px"></kbd>
+
 
 
 ## The 1000 mAh version
