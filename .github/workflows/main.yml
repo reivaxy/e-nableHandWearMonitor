@@ -21,8 +21,8 @@ jobs:
       - name: Install NTPClient lib
         run: platformio lib --global install https://github.com/arduino-libraries/NTPClient
         working-directory: handMonitor
-      - name: Install RTCtime lib
-        run: platformio lib --global install https://github.com/smz/Arduino-RTCtime
+      - name: Install RTC lib
+        run: platformio lib --global install https://github.com/Makuna/Rtc
         working-directory: handMonitor
       - name: Install NtpClient lib
         run: platformio lib --global install https://github.com/gmag11/NtpClient
