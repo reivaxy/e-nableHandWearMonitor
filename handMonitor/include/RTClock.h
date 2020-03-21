@@ -19,6 +19,7 @@
 #include <Wire.h> // default is SDA = 4, SCL = 5, not what we use
 
 #include <RtcDS3231.h>
+#include <RtcDateTime.h>
 
 
 class RTClock {
