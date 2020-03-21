@@ -36,7 +36,7 @@ char adminPage[] = "\
 <div><span class='label'>" MSG_PAUSE ": </span><span class='value " JSON_TAG_START_PAUSE "'></span> - <span class='value " JSON_TAG_END_PAUSE "'></span></div>\
 <div><span class='label'>" MSG_IS_PAUSED ": </span><span class='value " JSON_TAG_IS_PAUSED "'></span></div>\
 <div><span class='label'>" MSG_INIT_PAUSE_REFRESH_INTERVAL ": </span><span class='value " JSON_TAG_PAUSE_PERIOD "'></span>s</div>\
-<form action='/init' method='post'>\  
+<form action='/init' method='post'>\
   <!-- not yet \
   <input name='ntpHost' type='text' placeholder='" MSG_INIT_NTP_HOST "'/><br/>\
   <input name='webSite' type='text' placeholder='" MSG_INIT_WEBSITE "'/><br/>\

@@ -49,10 +49,10 @@ char initPage[] = "\
   <div class='value'><span class='label'>" MSG_INIT_AP_PWD "</span><input class='value' name='apPwd' type='password'/></div>\
   <div class='value'><span class='label'>" MSG_INIT_HOME_SSID "</span><input class='value " JSON_TAG_SSID "' name='homeSsid' type='text'/></div>\
   <div class='value'><span class='label'>" MSG_INIT_HOME_PWD "</span><input class='value' name='homePwd' type='password'/></div>\
-\  
+\
   <div  class='value' id='timeOffset'><span>" MSG_TIME_OFFSET "</span><br/>\
   <span class='label'>" MSG_INIT_TIME_OFFSET "</span><input class='value' name='timeOffset' type='text'/></div>\
-\  
+\
   <div class='value' id='manualTime'><span>" MSG_MANUAL_TIME_SETTING "</span><br/>\
   <span class='label'>" MSG_CURRENT_TIME "</span><input class='value' name='manualDateTime' type='datetime-local'/></div>\
 \
