@@ -63,7 +63,7 @@ public:
   virtual void initFromDefault();
   void initRtcMemConfig();
 
-  void init() override;
+  void init();
   void setName(const char*);
   const char* getName(void);
 
