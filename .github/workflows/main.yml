@@ -28,7 +28,7 @@ jobs:
         run: platformio lib --global install https://github.com/gmag11/NtpClient
         working-directory: handMonitor
       - name: Install ArduinoJson lib
-        run: platformio lib --global install https://github.com/bblanchon/ArduinoJson/tree/v5.13.2
+        run: platformio lib --global install ArduinoJson@5.13.4
         working-directory: handMonitor
       - name: Build
         run: platformio run
