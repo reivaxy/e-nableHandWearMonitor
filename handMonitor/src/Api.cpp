@@ -372,7 +372,9 @@ void Api::initSave() {
    }
 
    String intervalPause = server->arg("intervalPause");
-   config->setPausePeriod(intervalPause.toInt());
+   if(intervalPause.toInt() > 0) {
+      config->setPausePeriod(intervalPause.toInt());
+   }
 
    sendHtml(MSG_CONFIG_SAVED, 200);
    config->setInitDone(true);

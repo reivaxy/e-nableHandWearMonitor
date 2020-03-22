@@ -9,19 +9,24 @@ It uses a sensor to detect that the device is worn. Two types of sensors are sup
 The device has two modes: "recording" and "charging".
 
 
-In "recording mode" which is as long as the battery lasts, and not plugged into an usb charger, the Esp8266 wakes up at a period that can be set and saved in permanent memory, checks the presence sensor, and compares its state to the previous time it was checked.
+In "recording mode" which is as long as the battery lasts, and not plugged into an usb charger, the Esp8266 wakes up at a period that can be set and saved in permanent memory (default is every 5 seconds), checks the presence sensor, and compares its state to the previous time it was checked.
 
-If there is a difference, and for the third time in a row, it records the date and time in a file, in the Esp flash memory, saves the new state, and goes back to deep sleep until it automatically wakes up again. This allows to save battery life (from 1 to 3 weeks depending on model).
+If there is a difference, and for the third time in a row, it records the date and time in a file, in the Esp flash memory, saves the new state, and goes back to deep sleep until it automatically wakes up again.
 
 The "third time in a row" condition insures to not record transient changes that may be due to handling the device while strapping it on, or whatever.
 
-If there is no difference, it just goes back to deep sleep. 
+If there is no difference, it just goes back to deep sleep without recording anything.
+
+This allows to save battery life (from 1 to 3 weeks depending on model).
 
 In "charging mode", which is when an usb charger is plugged in, it keeps doing the check but every 2 seconds, won't record any changes, and won't sleep.
 
-Instead it opens up a wifi access points, and  the blue led blinks every 3 seconds to indicate the wifi is activated. When the device has not been set up (or as been reset to factory defaults), the default wifi network SSID is "HandMonitor", and password is the same. The password should be modified while setting up the device.
+Instead it opens up a wifi access point, and  the blue led blinks every 2 seconds to indicate the wifi is activated. When the device has not been set up (or as been reset to factory defaults), the default wifi network SSID is "HandMonitor", and password is the same.
 
-By connecting your phone to this network, one can access the module pages at http://192.168.4.1.
+**IMPORTANT: The password should be modified while setting up the device**.
+
+
+By connecting your phone to this network, you can access the module pages at http://192.168.4.1.
 
 If some settings were already saved at least once, the home page will be displayed.
 
@@ -30,17 +35,17 @@ If some settings were already saved at least once, the home page will be display
 If the device has never been set up, the settings page will be displayed. 
 
 
-## The setup page
+## The settings page
 
-Here is what the setup settings looks like with factory default settings (for now, it may change and this picture may not be up to date):
+Here is what the setup settings looks like with a custom skin (more on that later):
 
 <img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/setupPage.jpg" width="300px">
 
 You should provide a name for the device, for instance its owner first name.
 
-You can change the default ssid/pwd for the access point wifi network, and, optionally, provide your home wifi ssid and pwd. These are stored locally in the device memory, and never sent anywhere.
+You can change the default ssid/pwd **(please change at least the password)** for the access point wifi network, and, optionally, provide your home wifi ssid and pwd. These are stored locally in the device memory, and never sent anywhere.
 
-Providing your home wifi connection information will allow to automatically setup the date and time in the device, and will allow you to upload the data files listing each period the E-nable hand was worn to a dedicated server (work in progress).
+Providing your home wifi connection information will allow to automatically setup the date and time in the device, and will allow you to download the data files listing each period the E-nable hand was worn to your computer, and upload file to customize the apparence.
 
 If you don't provide your home wifi connection information you will be able to setup the time manually (work in progress), and download the data files to your computer or phone.
 
@@ -72,7 +77,7 @@ You can click on a file name to view its content, or on the arrow in front of it
 
 <kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/fileContent.png" width="200px"></kbd>
 
-I had no issue recording 15695 lines, in a 223K file. 
+I had no issue recording 15695 lines, in a 223K file (at the time, only the day was saved instead of the full date). 
 
 Each entry is composed of the date, then the hour, minute, second, then the state: 0 means device not worn, 1 means device worn. The actual level of the sensor is then added to the line, to help troubleshoot, if necessary.
 
@@ -131,6 +136,9 @@ The PCB is very thin to minimize weight and volume. This prototype PCB has a fau
 
 <kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/300mAhDevice.jpg" width="300px"></kbd>
 
-Since its shape is a bit long, it may not fit well due to the position of the second scratch tape, which is why another model is currently being crafter, that will be more squarish. Pictures will be added when available.
+Since its shape is a bit long, it is not convenient for a small hand (printed at 100% scale), which is why I designed this third layout:
 
-All PCB's are (or will be made) available in the repository, as well as 3D designs to 3D-print the cases.
+<kbd><img src="https://raw.githubusercontent.com/reivaxy/e-nableHandWearMonitor/master/resources/300mAhDeviceV3.jpg" width="300px"></kbd>
+
+
+All PCB's are (or will be made) available in the repository, as well as 3D designs to 3D-print the cases and the clip-on device to access serial connection for debuging or flashing firmware.
