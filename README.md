@@ -83,6 +83,10 @@ I had no issue recording 15695 lines, in a 223K file (at the time, only the day 
 
 Each entry is composed of the date, then the hour, minute, second, then the state: 0 means device not worn, 1 means device worn. The actual level of the sensor is then added to the line, to help troubleshoot, if necessary.
 
+A graphical representation of this data can be obtained by dropping one such file [on this webpage](https://reivaxy.github.io/handMonitorDataViz/)
+                                                     Data is not uploaded anywhere, and this visualisation tool can be installed locally on any computer without needing a webserver
+<img src="https://github.com/reivaxy/handMonitorDataViz/raw/main/resources/screenshot.png" width="200px">
+
 
 ## "Admin" page
 
